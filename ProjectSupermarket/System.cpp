@@ -1,0 +1,688 @@
+#include "System.h"
+#include <fstream>
+
+System::System() {
+
+    load_managers("load_managers.txt");
+    load_cashiers("load_cashiers.txt");
+    load_products_by_unit("load_products_by_unit.txt");
+    load_products_by_weight("load_products_by_weight.txt");
+    
+
+}
+
+static my_vector<my_string> split(const my_string& line, char delim) {
+    my_vector<my_string> parts;
+    my_string cur;
+
+    for (size_t i = 0; i < line.get_length(); ++i) {
+        char c = line[i];
+        if (c == delim) {
+            parts.push_back(cur); 
+            cur = "";             
+        }
+        else {
+            cur += c;             
+        }
+    }
+
+    parts.push_back(cur); 
+    return parts;
+
+}
+
+void System::load_managers(const my_string& filename) {
+    std::ifstream in(filename.c_str());
+    
+    if (!in) {
+        std::cout << "Error loading managers!" << std::endl;
+    }
+
+    if (in.peek() == EOF) {
+        in.close();
+        return; 
+    }
+
+    my_string line;
+    while (my_getline(in, line)) {
+        auto parts = split(line, ';');
+        size_t id = convert_string_to_size_t(parts[0]);
+        size_t age = convert_string_to_size_t(parts[3]);
+        managers.push_back(Manager(
+            id,
+            parts[1], parts[2],
+            age,
+            parts[4], parts[5]
+        ));
+    }
+    in.close();
+}
+
+void System::load_cashiers(const my_string& filename) {
+    std::ifstream in(filename.c_str());
+
+    if (!in) {
+        std::cout << "Error loading cashiers!" << std::endl;
+    }
+
+    if (in.peek() == EOF) {
+        in.close();
+        return;
+    }
+
+    my_string line;
+    while (my_getline(in, line)) {
+        auto parts = split(line, ';');
+        size_t id = convert_string_to_size_t(parts[0]);
+        size_t age = convert_string_to_size_t(parts[3]);
+        cashiers.push_back(Cashier(
+            id,
+            parts[1], parts[2],
+            age,
+            parts[4], parts[5]
+        ));
+
+        in.close();
+
+    }
+}
+
+void System::load_products_by_unit(const my_string& filename) {
+    std::ifstream in(filename.c_str());
+
+    if (!in) {
+        std::cout << "Error loading products by unit!" << std::endl;
+    }
+
+    if (in.peek() == EOF) {
+        in.close();
+        return;
+
+    }
+
+    my_string line;
+    while (my_getline(in, line)) {
+        auto parts = split(line, ';');
+        Category categ(parts[1], parts[2]);
+        double price = convert_string_to_double(parts[3]);
+        int quantity = convert_string_to_double(parts[4]);
+        products_by_unit.push_back(ProductByUnit(parts[0], categ, price, quantity));
+
+        in.close();
+    }
+}
+
+void System::load_products_by_weight(const my_string& filename) {
+    std::ifstream in(filename.c_str());
+
+    if (!in) {
+        std::cout << "Error loading products by weight!" << std::endl;
+    }
+
+    if (in.peek() == EOF) {
+        in.close();
+        return;
+    }
+
+    my_string line;
+    while (my_getline(in, line)) {
+        auto parts = split(line, ';');
+        Category categ(parts[1], parts[2]);
+        double price = convert_string_to_double(parts[3]);
+        int weight = convert_string_to_double(parts[4]);
+        products_by_weight.push_back(ProductByWeight(parts[0], categ, price, weight));
+
+        in.close();
+    }
+}
+
+size_t System::convert_string_to_size_t(const my_string& str) {
+    my_string temp = str;
+    size_t num = 0;
+    size_t size = str.get_length();
+    for (size_t i = 0, j = size; i < size; i++) {
+        num += (str[--j] - '0') * pow(10, i);
+    }
+    
+    return num;
+}
+
+double System::convert_string_to_double(const my_string& str) {
+    my_string temp = str;
+    size_t num = 0;
+    size_t counter = 0;
+    while (str[counter++] != '.');
+
+
+    for (size_t i = 0, j = counter - 1; i < counter - 1; i++) {
+        num += (str[--j] - '0') * pow(10, i);
+    }
+
+    size_t size = str.get_length();
+    double dec = 0;
+    for (size_t i = counter, j = size; i < size; i++) {
+        dec += (str[--j] - '0') * pow(10, i - counter);
+    }
+    dec /= pow(10, size - counter);
+
+
+    return dec + num;
+}
+
+double System::check_for_employee(const size_t& id) {
+    size_t size = managers.size();
+    for (size_t i = 0; i < size; i++)
+    {
+        if (id == managers[i].get_id()) return true;
+    }
+    size = cashiers.size();
+    for (size_t i = 0; i < size; i++)
+    {
+        if (id == cashiers[i].get_id()) return true;
+    }
+
+
+    return false;
+}
+
+bool System::isManager(const size_t& id) {
+    size_t size = managers.size();
+    for (size_t i = 0; i < size; i++)
+    {
+        if (id == managers[i].get_id()) return true;
+    }
+    size = cashiers.size();
+    for (size_t i = 0; i < size; i++)
+    {
+        if (id == cashiers[i].get_id()) return false;
+    }
+}
+
+size_t System::indexOfManager(const size_t& id) {
+    int index = 0;
+    for (;index < managers.size(); index++)
+    {
+        if (id == managers[index].get_id())return index;
+    }
+}
+
+size_t System::indexOfCashier(const size_t& id) {
+    int index = 0;
+    for (; index < cashiers.size(); index++)
+    {
+        if (id == cashiers[index].get_id())return index;
+    }
+}
+
+my_string my_to_string(size_t number) {
+    my_string result;
+    size_t size = 0;
+    size_t temp = number;
+
+    while (temp > 0) {
+        temp /= 10;
+        size++;
+    }
+    char ch;
+    size_t dev = pow(10, size - 1);
+    for (size_t i = 0; i < size; i++)
+    {
+        ch = (number / dev) + '0';
+        result += ch;
+        number %= dev;
+        dev /= 10;
+
+    }
+
+
+    return result;
+}
+
+my_string System::get_executuon_time() const{
+	time_t t = time(NULL);
+	struct tm date = *localtime(&t);
+	my_string data_time="<";
+	char buffer[10];
+	// Year (note: tm_year is years since 1900)
+	std::sprintf(buffer, "%d", date.tm_year + 1900);
+    data_time += (buffer);
+    data_time += ".";
+	// Month (tm_mon is 0–11, so add 1)
+	std::sprintf(buffer, "%02d", date.tm_mon + 1);
+    data_time += (buffer);
+    data_time += ".";
+	// Day
+	std::sprintf(buffer, "%02d", date.tm_mday);
+    data_time += (buffer);
+    data_time += ">";
+	// Hour
+	std::sprintf(buffer, "%02d", date.tm_hour);
+    data_time += "<";
+    data_time += (buffer);
+    data_time += ":";
+	// Minute
+	std::sprintf(buffer, "%02d", date.tm_min);
+    data_time += (buffer);
+    data_time += ":";
+	// Second
+	std::sprintf(buffer, "%02d", date.tm_sec);
+    data_time += (buffer);
+    data_time += ">";
+
+	return data_time;
+}
+
+void System::save_managers(const my_string& filename) {
+    std::ofstream out(filename.c_str(), std::ios::trunc);
+    if (!out) {
+        std::cout << "Error saving manager!" << std::endl;
+        return;
+    }
+    for (size_t i = 0; i < managers.size(); i++)
+    {
+        out << managers[i].get_id() << ";"
+            << managers[i].get_name() << ";"
+            << managers[i].get_surname() << ";"
+            << managers[i].get_age() << ";"
+            << managers[i].get_phone_number() << ";"
+            << managers[i].get_password() << "\n";
+    }
+
+    
+    out.close();
+}
+void System::save_cashiers(const my_string& filename){
+
+	std::ofstream out(filename.c_str(), std::ios::app);
+	if (!out) {
+		std::cout << "Error saving cashier!" << std::endl;
+		return;
+	}
+    for (size_t i = 0; i < cashiers.size(); i++)
+    {
+        out << cashiers[i].get_id() << ";"
+            << cashiers[i].get_name() << ";"
+            << cashiers[i].get_surname() << ";"
+            << cashiers[i].get_age() << ";"
+            << cashiers[i].get_phone_number() << ";"
+            << cashiers[i].get_password() << "\n";
+    }
+	out.close();
+
+}
+
+void System::delete_manager(const size_t& id) {
+	my_vector<Manager> temp_managers;
+    for (size_t i = 0; i < managers.size(); i++)
+    {   
+		if (managers[i].get_id() != id) {
+			temp_managers.push_back(managers[i]);
+		}
+    }
+	managers = temp_managers;
+
+	save_managers("load_managers.txt");
+
+	feed_list.push_back("Manager with ID: " + my_to_string(id) + " has been deleted from the system!" + get_executuon_time());
+}
+
+void System::delete_cashier(const size_t& id) {
+    my_vector<Cashier> temp_cashiers;
+    for (size_t i = 0; i < cashiers.size(); i++)
+    {
+        if (cashiers[i].get_id() != id) {
+            temp_cashiers.push_back(cashiers[i]);
+        }
+    }
+    cashiers = temp_cashiers;
+
+    save_cashiers("load_cashiers.txt");
+
+    feed_list.push_back("Manager with ID: " + my_to_string(id) + " has been deleted from the system!" + get_executuon_time());
+}
+
+
+
+void  System::login(const size_t& id, const my_string& password) {
+
+    if (!check_for_employee(id)) {
+        std::cout << "No employee with that ID!";
+        return;
+    }
+
+    if (isManager(id)) {
+        size_t index = indexOfManager(id);
+        current_id = managers[index].get_id();
+        current_name = managers[index].get_name();
+        current_surname = managers[index].get_surname();
+        current_age = managers[index].get_age();
+        current_phone_number = managers[index].get_phone_number();
+        current_password = managers[index].get_password();
+        current_special_code = managers[index].get_special_code();
+        current_role = "manager";
+
+        feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(id) + " has logged into the system!" + get_executuon_time());
+    }
+    else {
+
+        size_t index = indexOfCashier(id);
+        current_id = cashiers[index].get_id();
+        current_name = cashiers[index].get_name();
+        current_surname = cashiers[index].get_surname();
+        current_age = cashiers[index].get_age();
+        current_phone_number = cashiers[index].get_phone_number();
+        current_password = cashiers[index].get_password();
+        current_transactions = cashiers[index].get_transactions();
+        for (size_t i = 0; i < cashiers[index].get_warnings().size(); i++)
+        {
+            current_warnings[i] = cashiers[index].get_warnings()[i];
+        }
+        current_role = "cashier";
+
+    }
+        feed_list.push_back("Cashier " + current_name + " " + current_surname + " with ID: " + my_to_string(id) + " has logged into the system!" + get_executuon_time());
+
+    if (current_password == password) {
+        std::cout << "User " << current_name << " " << current_surname << " with ID: " << current_id << "has been logged into the system!" << std::endl;
+	}
+    else {
+        std::cout << "Wrong password!" << std::endl;
+        return;
+    }
+    
+
+
+
+
+}
+
+void System::register_employee(const my_string& role,
+    const my_string& name,
+    const my_string& surname,
+    const size_t& age,
+    const my_string& phone_number,
+    const my_string& password)
+{
+
+    std::ifstream in("countEmployees.txt");
+    if (!in) {
+        std::cout << "Error loading products by weight!" << std::endl;
+    }
+
+
+    my_string line;
+    my_getline(in, line);
+    in.close();
+
+    size_t id = convert_string_to_size_t(line);
+    id++;
+    ofstream outputFile("countEmployee.txt", ios::trunc);
+    if (!outputFile) {
+        std::cout << "Error opening file for writing!" << std::endl;
+        return;
+    }
+    outputFile << id;
+    outputFile.close();
+
+    std::ifstream in2("countEmployees.txt");
+    my_getline(in2, line);
+    in.close();
+
+    if (role == "manager")
+    {
+        line += "_special_code.txt";
+        Manager manager(id, name, surname, age, phone_number, password);
+        std::cout << "Manager registered successfully!" << std::endl;
+        managers.push_back(manager);
+        save_managers("load_managers.txt");
+
+        std::ofstream out(line.c_str());
+        if (!out) {
+            std::cout << "Error saving manager's special code!" << std::endl;
+            return;
+        }
+        manager.set_special_code(manager.generate_special_code());
+        std::cout << "Special code: " << manager.get_special_code() << std::endl;
+        std::cout << "Code: "<< line << std::endl;
+        out << manager.get_special_code() << "\n";
+        out.close();
+
+		feed_list.push_back("Manager " + manager.get_name() + " " + manager.get_surname() + " with ID: " + my_to_string(id) + " has been registered in the system!" + get_executuon_time());
+
+
+    }
+    else if (role == "cashier")
+    {
+
+        Cashier cashier(id, name, surname, age, phone_number, password);
+        pending_cashiers.push_back(cashier);
+        std::cout << "Cashier registration pending approval from a manager." << std::endl;
+		feed_list.push_back("Cashier " + cashier.get_name() + " " + cashier.get_surname() + " with ID: " + my_to_string(id) + " has been registered in the system and is pending approval!" + get_executuon_time());
+    }
+
+   
+
+} 
+
+void System::list_user_data(){
+
+    std::cout   << "ID:" << current_id
+                << "/nName:" << current_name
+                << "/nSurname:" << current_surname
+                << "/nAge:" << current_age
+                << "/nPhone number:" << current_phone_number
+                << "/nRole:" << current_role << std::endl;
+
+
+}
+
+void System::list_workers() {
+
+    std::cout << "Managers:" << std::endl;
+    for (size_t i = 0; i < managers.size(); i++)
+    {
+       
+        std::cout   << "ID:" << managers[i].get_id()
+                    << "/nName:" << managers[i].get_name()
+		            << "/nSurname:" << managers[i].get_surname()
+                    << "/nAge:" << managers[i].get_age()
+					<< "/nPhone number:" << managers[i].get_phone_number()
+                    << "/nRole: manager"<< std::endl;
+    }
+
+    std::cout << "Cashiers:" << std::endl;
+    for (size_t i = 0; i < cashiers.size(); i++)
+    {
+        std::cout << "ID:" << cashiers[i].get_id()
+            << "/nName:" << cashiers[i].get_name()
+            << "/nSurname:" << cashiers[i].get_surname()
+            << "/nAge:" << cashiers[i].get_age()
+            << "/nPhone number:" << cashiers[i].get_phone_number()
+            << "/nRole: cashier" << std::endl;
+    }
+
+
+}
+
+void System::list_products() {
+	std::cout << "Products by unit:" << std::endl;
+	for (size_t i = 0; i < products_by_unit.size(); i++)
+	{
+		std::cout << products_by_unit[i].get_name() << " - "
+			<< products_by_unit[i].get_category().get_name() << " - "
+			<< products_by_unit[i].get_price() << " - "
+			<< products_by_unit[i].get_quantity() << std::endl;
+	}
+	std::cout << "Products by weight:" << std::endl;
+	for (size_t i = 0; i < products_by_weight.size(); i++)
+	{
+		std::cout << products_by_weight[i].get_name() << " - "
+			<< products_by_weight[i].get_category().get_name() << " - "
+			<< products_by_weight[i].get_price() << " - "
+			<< products_by_weight[i].get_weight() << std::endl;
+	}
+}
+
+void System::list_products(const my_string& category_name) {
+	std::cout << "Products in category: " << category_name << std::endl;
+	for (size_t i = 0; i < products_by_unit.size(); i++)
+	{
+		if (products_by_unit[i].get_category().get_name() == category_name) {
+			std::cout << products_by_unit[i].get_name() << " - "
+				<< products_by_unit[i].get_price() << " - "
+				<< products_by_unit[i].get_quantity() << std::endl;
+		}
+	}
+	for (size_t i = 0; i < products_by_weight.size(); i++)
+	{
+		if (products_by_weight[i].get_category().get_name() == category_name) {
+			std::cout << products_by_weight[i].get_name() << " - "
+				<< products_by_weight[i].get_price() << " - "
+				<< products_by_weight[i].get_weight() << std::endl;
+		}
+	}
+}
+
+void System::list_feed() {
+	
+	std::ofstream out("feed_list.txt", std::ios::app);
+	if (!out) {
+		std::cout << "Error opening feed file!" << std::endl;
+		return;
+	}
+	for (size_t i = 0; i < feed_list.size(); i++)
+	{
+		out << feed_list[i] << std::endl;
+	}       
+
+	out.close();
+
+	std::ifstream in("feed_list.txt");
+	if (!in) {
+		std::cout << "Error opening feed file!" << std::endl;
+		return;
+	}
+	my_string line;
+    std::cout << "Current feed:" << std::endl;
+    while (my_getline(in, line)) {
+        std::cout << line << std::endl;
+    }
+	in.close();
+	
+}
+
+void System::list_transactions() {
+    std::ofstream out("transaction_list.txt", std::ios::app);
+    if (!out) {
+        std::cout << "Error opening feed file!" << std::endl;
+        return;
+    }
+    for (size_t i = 0; i < feed_list.size(); i++)
+    {
+        out << feed_list[i] << std::endl;
+    }
+
+    out.close();
+
+    std::ifstream in("transaction_list.txt");
+    if (!in) {
+        std::cout << "Error opening feed file!" << std::endl;
+        return;
+    }
+    my_string line;
+    std::cout << "Transactionsw:" << std::endl;
+    while (my_getline(in, line)) {
+        std::cout << line << std::endl;
+    }
+	in.close();
+
+}
+
+void System::logout() {
+	if (current_role == "manager") {
+        
+		feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has logged out of the system!" + get_executuon_time());
+	}
+	else {
+		feed_list.push_back("Cashier " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has logged out of the system!" + get_executuon_time());
+	}
+
+     current_id = 0;
+     current_name = "";
+     current_surname = "";
+     current_age = 0;;
+     current_phone_number = "";
+     current_password = "";
+     current_special_code = "";
+     current_transactions = 0;
+	 current_warnings = my_vector<Warning>();
+     current_role = "";
+
+}
+
+void System::leave() {
+	if (current_role == "manager") {
+        delete_manager(current_id);
+		feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has left the job!" + get_executuon_time());
+		
+    }
+	else {
+		delete_cashier(current_id);
+		feed_list.push_back("Cashier " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has left the job!" + get_executuon_time());
+	}
+
+    logout();
+}
+
+
+void System::list_pending(const my_string& special_code) {
+	if (current_role != "manager") {
+		std::cout << "You are not a manager!" << std::endl;
+		return;
+	}
+	if (special_code != current_special_code) {
+		std::cout << "Wrong special code!" << std::endl;
+		return;
+	}
+	std::cout << "Pending cashiers:" << std::endl;
+	for (size_t i = 0; i < pending_cashiers.size(); i++)
+	{
+		std::cout << "ID: " << pending_cashiers[i].get_id() << ", Name: "
+			<< pending_cashiers[i].get_name() << ", Surname: "
+			<< pending_cashiers[i].get_surname() << ", Age: "
+			<< pending_cashiers[i].get_age() << ", Phone number: "
+			<< pending_cashiers[i].get_phone_number() << std::endl;
+	}
+}
+
+void System::approve(const size_t& cashier_id, const my_string& special_code) {
+	if (current_role != "manager") {
+		std::cout << "You are not a manager!" << std::endl;
+		return;
+	}
+	if (special_code != current_special_code) {
+		std::cout << "Wrong special code!" << std::endl;
+		return;
+	}
+	my_vector<Cashier> temp_pending_cashiers;
+	size_t index = 0;
+	for (; index < pending_cashiers.size(); index++)
+	{
+		if (pending_cashiers[index].get_id() == cashier_id) break;
+	}
+
+	cashiers.push_back(pending_cashiers[index]);
+
+    for (size_t i = 0; i < pending_cashiers.size(); i++)
+    {
+		if (i != index)temp_pending_cashiers.push_back(pending_cashiers[i]);
+
+
+    }
+
+	pending_cashiers = temp_pending_cashiers;
+	
+
+	feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has approved cashier with ID: " + my_to_string(cashier_id) + "!" + get_executuon_time());
+}
+

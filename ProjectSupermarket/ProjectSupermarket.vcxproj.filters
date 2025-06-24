@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Warning">
+      <UniqueIdentifier>{7fe43bcf-4fa3-47bc-88c9-2d986d711164}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Helping">
+      <UniqueIdentifier>{dd325fe2-7240-459b-86c8-1b73d640023c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Warning">
+      <UniqueIdentifier>{7545f62a-4378-44e9-839f-7f3ca8d477ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Workers">
+      <UniqueIdentifier>{f17770ea-9964-4934-9e9b-263a6b4d96dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Workers">
+      <UniqueIdentifier>{4d2eaf3d-7ce6-4597-95b1-aa36d3d973e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Products">
+      <UniqueIdentifier>{8ae358d1-c3db-4010-b081-6ef9063edce6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Products">
+      <UniqueIdentifier>{931d9256-8f4c-4ff1-95da-a32a93c39c53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Helping">
+      <UniqueIdentifier>{1de97fd8-56b3-44b6-83e7-481e248d7552}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Supermarket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="my_vector.h">
+      <Filter>Header Files\Helping</Filter>
+    </ClCompile>
+    <ClCompile Include="Warning.cpp">
+      <Filter>Source Files\Warning</Filter>
+    </ClCompile>
+    <ClCompile Include="Employee.cpp">
+      <Filter>Source Files\Workers</Filter>
+    </ClCompile>
+    <ClCompile Include="Cashier.cpp">
+      <Filter>Source Files\Workers</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager.cpp">
+      <Filter>Source Files\Workers</Filter>
+    </ClCompile>
+    <ClCompile Include="Product.cpp">
+      <Filter>Source Files\Products</Filter>
+    </ClCompile>
+    <ClCompile Include="Category.cpp">
+      <Filter>Source Files\Products</Filter>
+    </ClCompile>
+    <ClCompile Include="ProductByUnit.cpp">
+      <Filter>Source Files\Products</Filter>
+    </ClCompile>
+    <ClCompile Include="ProductByWeight.cpp">
+      <Filter>Source Files\Products</Filter>
+    </ClCompile>
+    <ClCompile Include="System.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="my_string.cpp">
+      <Filter>Source Files\Helping</Filter>
+    </ClCompile>
+    <ClCompile Include="feed_list.txt">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="transaction_list.txt">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Employee.h">
+      <Filter>Header Files\Workers</Filter>
+    </ClInclude>
+    <ClInclude Include="Warnings.h">
+      <Filter>Header Files\Warning</Filter>
+    </ClInclude>
+    <ClInclude Include="my_string.h">
+      <Filter>Header Files\Helping</Filter>
+    </ClInclude>
+    <ClInclude Include="Cashier.h">
+      <Filter>Header Files\Workers</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager.h">
+      <Filter>Header Files\Workers</Filter>
+    </ClInclude>
+    <ClInclude Include="Product.h">
+      <Filter>Header Files\Products</Filter>
+    </ClInclude>
+    <ClInclude Include="Category.h">
+      <Filter>Header Files\Products</Filter>
+    </ClInclude>
+    <ClInclude Include="ProductByUnit.h">
+      <Filter>Header Files\Products</Filter>
+    </ClInclude>
+    <ClInclude Include="ProductByWeight.h">
+      <Filter>Header Files\Products</Filter>
+    </ClInclude>
+    <ClInclude Include="System.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="load_products_by_unit.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="load_products_by_weight.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="load_cashiers.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="load_managers.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="countEmployees.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+  </ItemGroup>
+</Project>
