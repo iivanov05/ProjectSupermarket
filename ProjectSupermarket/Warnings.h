@@ -10,12 +10,13 @@ protected:
 	my_string sender;
 	my_string description;
 	size_t critical_points = 0;
-	 
+	my_string points_description;
 	public:
 		Warning();
 		Warning& operator=(const Warning& other);
 		~Warning() = default;
 
+	
 		my_string get_sender()const;
 		my_string get_description()const;
 		size_t get_critical_points()const;

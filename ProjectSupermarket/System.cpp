@@ -686,3 +686,43 @@ void System::approve(const size_t& cashier_id, const my_string& special_code) {
 	feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has approved cashier with ID: " + my_to_string(cashier_id) + "!" + get_executuon_time());
 }
 
+void System::decline(const size_t& cashier_id, const my_string& special_code) {
+	if (current_role != "manager") {
+		std::cout << "You are not a manager!" << std::endl;
+		return;
+	}
+	if (special_code != current_special_code) {
+		std::cout << "Wrong special code!" << std::endl;
+		return;
+	}
+	my_vector<Cashier> temp_pending_cashiers;
+	size_t index = 0;
+	for (; index < pending_cashiers.size(); index++)
+	{
+		if (pending_cashiers[index].get_id() == cashier_id) break;
+	}
+	for (size_t i = 0; i < pending_cashiers.size(); i++)
+	{
+		if (i != index)temp_pending_cashiers.push_back(pending_cashiers[i]);
+	}
+	pending_cashiers = temp_pending_cashiers;
+	feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has declined cashier with ID: " + my_to_string(cashier_id) + "!" + get_executuon_time());
+}
+
+void System::list_warned_cashiers(const size_t& points) {
+	if (current_role != "manager") {
+		std::cout << "You are not a manager!" << std::endl;
+		return;
+	}
+	std::cout << "Warned cashiers with more that" << points << " points:" << std::endl;
+	for (size_t i = 0; i < cashiers.size(); i++)
+	{
+		if (cashiers[i].get_warnings() >= points) {
+			std::cout << "ID: " << cashiers[i].get_id() << ", Name: "
+				<< cashiers[i].get_name() << ", Surname: "
+				<< cashiers[i].get_surname() << ", Age: "
+				<< cashiers[i].get_age() << ", Phone number: "
+				<< cashiers[i].get_phone_number() << std::endl;
+		}
+	}
+}

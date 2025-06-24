@@ -20,6 +20,7 @@ public:
 
 	~Cashier() override = default;
 
+	size_t get_points_from_all_warnings() const;
 	size_t get_transactions()const;
 	my_vector<Warning> get_warnings()const;
 };

@@ -13,6 +13,7 @@ Warning& Warning::operator=(const Warning& other) {
 		sender = other.sender;
 		description = other.description;
 		critical_points = other.critical_points;
+		points_description = other.points_description;
 	}
 
 	return *this;

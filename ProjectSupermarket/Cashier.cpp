@@ -10,6 +10,20 @@ Cashier::Cashier(const size_t& id1,
 
 
 }
+
+
+size_t Cashier::get_points_from_all_warnings() const{
+	size_t points = 0;
+
+		for (size_t i = 0; i < warnings.size(); i++)
+		{
+			points += warnings[i].get_critical_points();
+		}
+
+	return points;
+
+}
+
 size_t Cashier::get_transactions()const {
 	return transactions;
 }
