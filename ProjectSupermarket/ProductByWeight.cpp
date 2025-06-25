@@ -7,8 +7,7 @@ ProductByWeight::ProductByWeight(const my_string& name1,
     const double& price1,
     const double& weight1) :Product(name1, obj1, price1) {
 
-    set_weight(weight1);
-
+	weight = weight1;
 }
 
 double ProductByWeight::get_weight() {

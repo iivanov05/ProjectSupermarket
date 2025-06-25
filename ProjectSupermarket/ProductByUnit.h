@@ -5,7 +5,7 @@
 class ProductByUnit : public Product {
 private:
     int quantity;
-    void set_quantity(const int& q);
+
 
 public:
     ProductByUnit() = default;
@@ -17,7 +17,7 @@ public:
 
     ~ProductByUnit() override = default;
 
-   
+	void set_quantity(const int& new_quantity);
     int get_quantity()  const;
     
 };

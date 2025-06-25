@@ -3,7 +3,7 @@
 class ProductByWeight : public Product {
 private:
     double weight;
-    void set_weight(const double& weight);
+    
 
 public:
 
@@ -17,6 +17,7 @@ public:
     ~ProductByWeight() override = default;
 
 
+    void set_weight(const double& weight);
     double get_weight();
 
 };

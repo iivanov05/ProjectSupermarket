@@ -2,6 +2,7 @@
 #include <fstream>
 
 
+
 System::System() {
 
     load_managers("load_managers.txt");
@@ -333,9 +334,15 @@ void System::delete_cashier(const size_t& id) {
     }
     cashiers = temp_cashiers;
 
+    my_string filename = my_to_string(id)+"_warnings.txt";
+
+	std::ofstream out(filename.c_str(), std::ios::trunc); 
+	out.close();
+    
+    
     save_cashiers("load_cashiers.txt");
 	Time time;
-    feed_list.push_back("Manager with ID: " + my_to_string(id) + " has been deleted from the system!" + time.get_executuon_time());
+    feed_list.push_back("Cashier with ID: " + my_to_string(id) + " has been deleted from the system!" + time.get_executuon_time());
 }
 
 
@@ -759,3 +766,351 @@ void System::warn_cashier(const size_t& cashier_id, const size_t& points) {
 	Time time;
 	feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has warned cashier with ID: " + my_to_string(cashier_id) + " with " + my_to_string(points) + " points!" + time.get_executuon_time());
 }
+
+
+void System::promote_cashier(const size_t& cashier_id, const my_string& special_code) {
+
+	if (current_role != "manager") {
+		std::cout << "You are not a manager!" << std::endl;
+		return;
+	}
+
+	if (special_code != current_special_code) {
+		std::cout << "Wrong special code!" << std::endl;
+		return;
+	}
+
+    size_t index = indexOfCashier(cashier_id);
+	Manager promoted_cashier(cashiers[index].get_id(),
+		cashiers[index].get_name(),
+		cashiers[index].get_surname(),
+		cashiers[index].get_age(),
+		cashiers[index].get_phone_number(),
+		cashiers[index].get_password());
+
+	    promoted_cashier.set_special_code(promoted_cashier.generate_special_code());
+
+        my_string line;
+        
+        line += "_special_code.txt";
+
+        std::cout << "Cashier promoted successfully!" << std::endl;
+        managers.push_back(promoted_cashier);
+        save_managers("load_managers.txt");
+
+        std::ofstream out(line.c_str());
+
+        if (!out) {
+            std::cout << "Error saving manager's special code!" << std::endl;
+            return;
+        }
+        
+        std::cout << "Special code: " << promoted_cashier.get_special_code() << std::endl;
+        std::cout << "Code: " << line << std::endl;
+        out << promoted_cashier.get_special_code() << "\n";
+        out.close();
+
+	Time time;
+	feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has promoted cashier with ID: " + my_to_string(cashier_id) + " to manager!" + time.get_executuon_time());
+	delete_cashier(cashier_id);
+
+
+}
+
+
+void System::fire_cashier(const size_t& cashier_id, const my_string& special_code) {
+
+    if (current_role != "manager") {
+        std::cout << "You are not a manager!" << std::endl;
+        return;
+    }
+
+    if (special_code != current_special_code) {
+        std::cout << "Wrong special code!" << std::endl;
+        return;
+    }
+
+    Time time;
+    delete_cashier(current_id);
+    feed_list.push_back("Manager " + current_name + " " + current_surname + " fired Cashier with ID: " + my_to_string(cashier_id) + "!" + time.get_executuon_time());
+
+
+
+
+
+}
+
+
+void System::add_category(const my_string& category_name, const my_string& category_description) {
+    if (current_role != "manager") {
+        std::cout << "You are not a manager!" << std::endl;
+        return;
+    }
+
+    for (size_t i = 0; i < categories.size(); i++)
+    {
+		if (categories[i].get_name() == category_name) {
+			std::cout << "Category with that name already exists!" << std::endl;
+			return;
+		}
+    }
+
+	Category new_category(category_name, category_description);
+	categories.push_back(new_category);
+	Time time;
+	feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has added category: " + category_name + "!" + time.get_executuon_time());
+}
+
+void System::delete_category(const my_string& category_name) {
+	
+	if (current_role != "manager") {
+		std::cout << "You are not a manager!" << std::endl;
+		return;
+
+	}
+
+    for (size_t i = 0; i < products_by_unit.size(); i++)
+    {
+        if (products_by_unit[i].get_category().get_name() == category_name && products_by_unit[i].get_quantity()!=0) {
+			std::cout << "You cannot delete a category that has products in it!" << std::endl;
+            return;
+        }
+    }
+    for (size_t i = 0; i < products_by_weight.size(); i++)
+    {
+        if (products_by_weight[i].get_category().get_name() == category_name && products_by_weight[i].get_weight() != 0) {
+            std::cout << "You cannot delete a category that has products in it!" << std::endl;
+            return;
+        }
+    }
+
+    my_vector<Category> temp_categories;
+	for (size_t i = 0; i < categories.size(); i++)
+	{
+		if (categories[i].get_name() != category_name) {
+			temp_categories.push_back(categories[i]);
+		}
+	}
+	categories = temp_categories;
+	Time time;
+	feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has deleted category: " + category_name + "!" + time.get_executuon_time());
+}
+
+void System::add_product(const my_string& product_type) {
+
+	if (current_role != "manager") {
+		std::cout << "You are not a manager!" << std::endl;
+		return;
+	}
+
+	my_string name, category_name, category_description;
+	double price;
+	
+
+	std::cout << "Enter product name: ";
+	std::cin >> name;
+	std::cout << "Enter category name: ";
+	std::cin >> category_name;
+    
+	bool category_exists = false;
+    Category current_category;
+    for (size_t i = 0; i < categories.size(); i++)
+    {
+		if (categories[i].get_name() == category_name) {
+			category_exists = true;
+			current_category = categories[i];
+		
+		}
+    }
+
+    if (!category_exists) {
+
+	    std::cout << "Category does not exist! Please add it first." << std::endl;
+	    return;
+    }
+    else
+    {
+        
+        if (product_type == "product_by_unit") {
+			size_t quantity = 0;
+            std::cout << "Enter product quantity: ";
+            std::cin >> quantity;
+            std::cout << "Enter product price: ";
+            std::cin >> price;
+
+			bool product_exists = false;
+			size_t product_index = 0;
+            for (size_t i = 0; i < products_by_unit.size(); i++)
+            {
+                if (products_by_unit[i].get_name() == name) {
+					product_exists = true;
+					product_index = i;
+                }
+            }
+
+            if (product_exists) {
+
+                products_by_unit[product_index].set_quantity(products_by_unit[product_index].get_quantity() + quantity);
+            }
+            else
+            {
+		        ProductByUnit new_product(name, current_category, price, quantity);
+                products_by_unit.push_back(new_product);
+            }
+
+            Time time;
+            feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has added product by unit: " + name + "!" + time.get_executuon_time());
+        }
+        else if (product_type == "product_by_weight") {
+			double weight = 0;
+            std::cout << "Enter product weight: ";
+            std::cin >> weight;
+            std::cout << "Enter product price: ";
+            std::cin >> price;
+
+            bool product_exists = false;
+            size_t product_index = 0;
+            for (size_t i = 0; i < products_by_weight.size(); i++)
+            {
+                if (products_by_weight[i].get_name() == name) {
+                    product_exists = true;
+                    product_index = i;
+                }
+            }
+
+            if (product_exists) {
+
+                products_by_weight[product_index].set_weight(products_by_weight[product_index].get_weight() + weight);
+            }
+            else
+            {
+                ProductByWeight new_product(name, current_category, price, weight);
+                products_by_weight.push_back(new_product);
+            }
+
+            Time time;
+            feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has added product by weight: " + name + "!" + time.get_executuon_time());
+        }
+
+    }
+
+}
+
+void System::delete_product(const my_string& product_name) {
+	if (current_role != "manager") {
+		std::cout << "You are not a manager!" << std::endl;
+		return;
+	}
+	my_vector<ProductByUnit> temp_products_by_unit;
+	for (size_t i = 0; i < products_by_unit.size(); i++)
+	{
+		if (products_by_unit[i].get_name() != product_name) {
+			temp_products_by_unit.push_back(products_by_unit[i]);
+		}
+	}
+	products_by_unit = temp_products_by_unit;
+	my_vector<ProductByWeight> temp_products_by_weight;
+	for (size_t i = 0; i < products_by_weight.size(); i++)
+	{
+		if (products_by_weight[i].get_name() != product_name) {
+			temp_products_by_weight.push_back(products_by_weight[i]);
+		}
+	}
+	products_by_weight = temp_products_by_weight;
+	Time time;
+	feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has deleted product: " + product_name + "!" + time.get_executuon_time());
+}
+
+void System::load_products(const my_string& filename) {
+	my_string path = filename + ".txt";
+	std::ifstream in(path.c_str());
+	if (!in) {
+		std::cout << "Error loading products!" << std::endl;
+		return;
+	}
+	my_string line;
+	while (my_getline(in, line)) {
+		auto parts = split(line, ':');
+        if (parts[0] == "NEW") {
+
+			my_string product_type = parts[1];
+			my_string product_name = parts[2];
+			my_string category_name = parts[3];
+
+			size_t categ_index = 0;
+			bool category_exists = false;
+            for (size_t i = 0; i < categories.size(); i++)
+            {
+                if (categories[i].get_name() == category_name)
+                {
+                    category_exists = true;
+					categ_index = i;
+                }
+            }
+            if (!category_exists)
+            {
+				std::cout << "Category does not exist! Please add it first." << std::endl;
+                return;
+            }
+            
+            if (product_type == "product_by_unit") {
+				double price = convert_string_to_double(parts[4]);
+				size_t quantity = convert_string_to_size_t(parts[5]);
+				
+				products_by_unit.push_back(ProductByUnit(product_name, categories[categ_index], price, quantity));
+			}
+			else if (product_type == "product_by_weight") {
+				double price = convert_string_to_double(parts[4]);
+				double weight = convert_string_to_double(parts[5]);
+				products_by_weight.push_back(ProductByWeight(product_name, categories[categ_index], price, weight));
+			}
+			else {
+				std::cout << "Unknown product type!" << std::endl;
+            }
+
+        }
+        else
+        {
+            my_string product_type = parts[0];
+            my_string product_name = parts[1];
+            my_string category_name = parts[2];
+
+            size_t categ_index = 0;
+            bool category_exists = false;
+            for (size_t i = 0; i < categories.size(); i++)
+            {
+                if (categories[i].get_name() == category_name)
+                {
+                    category_exists = true;
+                    categ_index = i;
+                }
+            }
+            if (!category_exists)
+            {
+                std::cout << "Category does not exist! Please add it first." << std::endl;
+                return;
+            }
+
+
+            if (product_type == "product_by_unit") {
+                double price = convert_string_to_double(parts[3]);
+                size_t quantity = convert_string_to_size_t(parts[4]);
+
+                products_by_unit.push_back(ProductByUnit(product_name, categories[categ_index], price, quantity));
+            }
+            else if (product_type == "product_by_weight") {
+                double price = convert_string_to_double(parts[3]);
+                double weight = convert_string_to_double(parts[4]);
+                products_by_weight.push_back(ProductByWeight(product_name, categories[categ_index], price, weight));
+            }
+            else {
+                std::cout << "Unknown product type!" << std::endl;
+            }
+        }
+       
+		
+	}
+
+
+}
+

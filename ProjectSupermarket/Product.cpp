@@ -3,9 +3,9 @@
 Product::Product(const my_string& name1,
     const Category& obj1,
     const double& price1) {
-    set_name(name1);
+    name = name1;
     obj = obj1;
-    set_price(price1);
+    price = price1;
 
 }
 

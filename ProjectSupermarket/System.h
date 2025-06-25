@@ -30,6 +30,7 @@ private:
 	my_vector<Cashier> cashiers;
 	my_vector<ProductByUnit> products_by_unit;
 	my_vector<ProductByWeight> products_by_weight;
+	my_vector< Category> categories;
 
 	void load_managers(const my_string& filename);
 	void load_cashiers(const my_string& filename);
@@ -69,7 +70,7 @@ public:
 	void fire_cashier(const size_t& cashier_id, const my_string& special_code);
 	void add_category(const my_string& category_name, const my_string& category_description);
 	void delete_category(const my_string& category_name);
-	void add_product(const my_string& product_type);
+	void add_product(const my_string& product_name);
 	void delete_product(const my_string& product_name);
 	void load_products(const my_string& filename);
 	void load_gift_card(const my_string& filename);
