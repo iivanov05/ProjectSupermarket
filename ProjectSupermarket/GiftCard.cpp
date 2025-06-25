@@ -37,6 +37,17 @@ my_string GiftCard::special_code() const {
     my_string line;
     my_getline(in, line);
 	in.close();
+    
+        my_string temp = line;
+        size_t num = 0;
+        size_t size = line.get_length();
+        for (size_t i = 0, j = size; i < size; i++) {
+            num += (line[--j] - '0') * pow(10, i);
+        }
+        std::ofstream out("countGiftCards.txt",ios::trunc);
+		out << num + 1;
+
+		out.close();
 
 	code += line;
 

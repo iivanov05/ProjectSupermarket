@@ -266,14 +266,14 @@ double System::convert_string_to_double(const my_string& str) {
     return dec + num;
 }
 
-double System::check_for_employee(const size_t& id) {
-    size_t size = managers.size();
-    for (size_t i = 0; i < size; i++)
+bool System::check_for_employee(const size_t& id) {
+    
+    for (size_t i = 0; i < managers.size(); i++)
     {
         if (id == managers[i].get_id()) return true;
     }
-    size = cashiers.size();
-    for (size_t i = 0; i < size; i++)
+    
+    for (size_t i = 0; i < cashiers.size(); i++)
     {
         if (id == cashiers[i].get_id()) return true;
     }
@@ -796,15 +796,12 @@ void System::leave() {
 }
 
 
-void System::list_pending(const my_string& special_code) {
+void System::list_pending() {
 	if (current_role != "manager") {
 		std::cout << "You are not a manager!" << std::endl;
 		return;
 	}
-	if (special_code != current_special_code) {
-		std::cout << "Wrong special code!" << std::endl;
-		return;
-	}
+
 	std::cout << "Pending cashiers:" << std::endl;
 	for (size_t i = 0; i < pending_cashiers.size(); i++)
 	{
@@ -1298,4 +1295,251 @@ void System::load_gift_card(const my_string& filename) {
 
 }
 
-void
+void System::start_System() {
+    std::cout << "Welcome to the Supermarket System!" << std::endl;
+    std::cout << "Please choose an action:" << std::endl;
+
+
+input:
+	double price=0;
+    my_string input;
+    auto parts = split(input, ' ');
+    my_string command = parts[0];
+    if (command == "register")
+    {
+        if (parts.size() != 7) {
+            std::cout << "Invalid number of arguments for register command!" << std::endl;
+            goto input;
+        }
+
+        register_employee(parts[1], parts[2], parts[3], convert_string_to_size_t(parts[4]), parts[5], parts[6]);
+        goto input;
+
+    }
+    else if (command == "login") {
+        if (parts.size() != 3) {
+
+            std::cout << "Invalid number of arguments for login command!" << std::endl;
+            goto input;
+
+        }
+        login(convert_string_to_size_t(parts[1]), parts[2]);
+        goto input;
+
+    }
+    else if (current_id == 0) {
+
+		std::cout << "You must be logged in to perform this action!" << std::endl;
+		goto input;
+
+    }
+    else if (command == "sell") {
+        std::cout << "Products: " << std::endl;
+        for (size_t i = 0; i < products_by_unit.size(); i++)
+        {
+			std::cout << "\t" << products_by_unit[i].get_name() << " : "
+				<< products_by_unit[i].get_price() << " : "
+				<< products_by_unit[i].get_quantity() << std::endl;
+        }
+        for (size_t i = 0; i < products_by_weight.size(); i++)
+        { 
+			std::cout << "\t" << products_by_weight[i].get_name() << " : "
+				<< products_by_weight[i].get_price() << " : "
+				<< products_by_weight[i].get_weight() << std::endl;
+        }
+
+
+    }
+    else if (command == "list-user-data") {
+        if (parts.size() != 1) {
+            std::cout << "Invalid number of arguments for list_user_data command!" << std::endl;
+            goto input;
+        }
+        list_user_data();
+        goto input;
+
+    }
+    else if (command == "list-workers") {
+        if (parts.size() != 1) {
+            std::cout << "Invalid number of arguments for list_workers command!" << std::endl;
+            goto input;
+        }
+        list_workers();
+        goto input;
+    }
+    else if (command == "list-products") {
+
+        if (parts.size() == 1) {
+
+            list_products();
+            goto input;
+
+        }
+        else if (parts.size() == 2) {
+            list_products(parts[1]);
+            goto input;
+        }
+        else {
+            std::cout << "Invalid number of arguments for list_products command!" << std::endl;
+            goto input;
+        }
+        
+
+    }
+    else if (command == "list-feed") {
+        if (parts.size() != 1) {
+            std::cout << "Invalid number of arguments for list_feed command!" << std::endl;
+            goto input;
+        }
+        list_feed();
+        goto input;
+    }
+    else if (command == "list-transactions") {
+        if (parts.size() != 1) {
+            std::cout << "Invalid number of arguments for list_transactions command!" << std::endl;
+            goto input;
+        }
+        list_transactions();
+        goto input;
+    }
+    else if (command == "logout") {
+        if (parts.size() != 1) {
+            std::cout << "Invalid number of arguments for logout command!" << std::endl;
+            goto input;
+        }
+        logout();
+        goto input;
+    }
+    else if (command == "leave") {
+        if (parts.size() != 1) {
+            std::cout << "Invalid number of arguments for leave command!" << std::endl;
+            goto input;
+        }
+        leave();
+        goto input;
+    }
+    else if(current_role != "manager")
+    {
+		std::cout << "You must be a manager to perform this action!" << std::endl;
+		goto input;
+	}
+    else if (command == "list-pending") {
+
+        if (parts.size() != 1) {
+            std::cout << "Invalid number of arguments for leave command!" << std::endl;
+            goto input;
+        }
+
+		list_pending();
+        goto input;
+
+
+	}
+    else if (command == "approve") {
+        if (parts.size() != 3) {
+            std::cout << "Invalid number of arguments for approve command!" << std::endl;
+            goto input;
+        }
+        approve(convert_string_to_size_t(parts[1]), parts[2]);
+        goto input;
+
+		}
+	else if (command == "decline") {
+		if (parts.size() != 3) {
+			std::cout << "Invalid number of arguments for decline command!" << std::endl;
+			goto input;
+		}
+		decline(convert_string_to_size_t(parts[1]), parts[2]);
+		goto input;
+		}
+	else if (command == "list-warned-cashiers") {
+		if (parts.size() != 2) {
+			std::cout << "Invalid number of arguments for list_warned_cashiers command!" << std::endl;
+			goto input;
+		}
+		list_warned_cashiers(convert_string_to_size_t(parts[1]));
+		goto input;
+		}
+	else if (command == "warn-cashier") {
+		if (parts.size() != 3) {
+			std::cout << "Invalid number of arguments for warn_cashier command!" << std::endl;
+			goto input;
+		}
+		warn_cashier(convert_string_to_size_t(parts[1]), convert_string_to_size_t(parts[2]));
+		goto input;
+		}
+	else if (command == "promote-cashier") {
+		if (parts.size() != 3) {
+			std::cout << "Invalid number of arguments for promote_cashier command!" << std::endl;
+			goto input;
+		}
+		promote_cashier(convert_string_to_size_t(parts[1]), parts[2]);
+		goto input;
+		}
+	else if (command == "fire-cashier") {
+		if (parts.size() != 3) {
+			std::cout << "Invalid number of arguments for fire_cashier command!" << std::endl;
+			goto input;
+		}
+		fire_cashier(convert_string_to_size_t(parts[1]), parts[2]);
+		goto input;
+		}
+	else if (command == "add-category") {
+		if (parts.size() != 3) {
+			std::cout << "Invalid number of arguments for add_category command!" << std::endl;
+			goto input;
+		}
+		add_category(parts[1], parts[2]);
+		goto input;
+		}
+	else if (command == "delete-category") {
+		if (parts.size() != 2) {
+			std::cout << "Invalid number of arguments for delete_category command!" << std::endl;
+			goto input;
+		}
+		delete_category(parts[1]);
+		goto input;
+		}
+	else if (command == "add-product") {
+	    if (parts.size() != 2) {
+		    std::cout << "Invalid number of arguments for add_product command!" << std::endl;
+		    goto input;
+	    }
+	    add_product(parts[1]);
+	    goto input;
+	    }
+	else if (command == "delete-product") {
+		if (parts.size() != 2) {
+			std::cout << "Invalid number of arguments for delete_product command!" << std::endl;
+			goto input;
+		}
+		delete_product(parts[1]);
+		goto input;
+		}
+	else if (command == "load-products") {
+		if (parts.size() != 2) {
+			std::cout << "Invalid number of arguments for load_products command!" << std::endl;
+			goto input;
+		}
+		load_products(parts[1]);
+		goto input;
+		}
+	else if (command == "load-gift-card") {
+	    if (parts.size() != 2) {
+		    std::cout << "Invalid number of arguments for load_gift_card command!" << std::endl;
+		    goto input;
+	    }
+	    load_gift_card(parts[1]);
+	    goto input;
+	    }
+	else if (command == "exit") {
+		return;
+		}
+	else {
+	    std::cout << "Unknown command!" << std::endl;
+	    goto input;
+	    }
+
+}
+
+

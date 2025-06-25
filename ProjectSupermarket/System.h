@@ -13,7 +13,7 @@
 
 class System {
 private:
-	 size_t current_id;
+	 size_t current_id = 0;
 	 my_string current_name;
 	 my_string current_surname;
 	 size_t current_age;
@@ -68,7 +68,7 @@ public:
 
 	//Maneger
 
-	void list_pending(const my_string& special_code);
+	void list_pending();
 	void approve(const size_t& cashier_id, const my_string& special_code);
 	void decline(const size_t& cashier_id, const my_string& special_code);
 	void list_warned_cashiers(const size_t& points);
@@ -85,7 +85,7 @@ public:
 
 
 	//helping functions
-	
+	void start_System();
 	void delete_gift_card(const my_string& special_code);
 	void update_current_cashier(const size_t& id);
 	void delete_manager(const size_t& id);
@@ -100,5 +100,5 @@ public:
 	bool isManager(const size_t&id);
 	size_t convert_string_to_size_t(const my_string& str);
 	double convert_string_to_double(const my_string& str);
-	double check_for_employee(const size_t& id);
+	bool check_for_employee(const size_t& id);
 };
