@@ -6,6 +6,8 @@
 #include "ProductByWeight.h"
 #include "my_vector.h"
 #include "my_string.h"
+#include "Time.h"
+
 
 class System {
 private:
@@ -75,9 +77,9 @@ public:
 
 
 	//helping functions
+	void update_current_cashier(const size_t& id);
 	void delete_manager(const size_t& id);
 	void delete_cashier(const size_t& id);
-	my_string get_executuon_time()const;
 	void save_cashiers( const my_string& filename);
 	void save_managers( const my_string& filename);
 	size_t indexOfManager(const size_t& id);

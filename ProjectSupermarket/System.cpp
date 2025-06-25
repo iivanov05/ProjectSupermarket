@@ -1,6 +1,7 @@
 #include "System.h"
 #include <fstream>
 
+
 System::System() {
 
     load_managers("load_managers.txt");
@@ -71,21 +72,41 @@ void System::load_cashiers(const my_string& filename) {
     }
 
     my_string line;
+	size_t counter = 0;
     while (my_getline(in, line)) {
         auto parts = split(line, ';');
         size_t id = convert_string_to_size_t(parts[0]);
         size_t age = convert_string_to_size_t(parts[3]);
-        cashiers.push_back(Cashier(
-            id,
-            parts[1], parts[2],
-            age,
-            parts[4], parts[5]
-        ));
+		size_t transactions = convert_string_to_size_t(parts[6]);
+        cashiers.push_back(Cashier(id, parts[1], parts[2], age, parts[4], parts[5], transactions));
+		
+		my_string path =  parts[0] + "_warnings.txt";
+		std::ifstream warnings_file(path.c_str());
 
-        in.close();
+        if (!warnings_file) {
+            std::cout << "Error loading warning file!" << std::endl;
+        }
 
+        while (my_getline(warnings_file, line)) {
+            auto parts = split(line, ';');
+			my_string sender = parts[0] +" "+ parts[1];
+			my_string description = parts[2];
+			size_t critical_points = convert_string_to_size_t(parts[3]);
+
+			Warning loading_warning(sender,description, critical_points);
+
+			cashiers[counter].get_warnings().push_back(loading_warning);   
+        }
+		warnings_file.close();
+		
+		counter++;
     }
+
+    
+ in.close();
+
 }
+
 
 void System::load_products_by_unit(const my_string& filename) {
     std::ifstream in(filename.c_str());
@@ -238,39 +259,14 @@ my_string my_to_string(size_t number) {
     return result;
 }
 
-my_string System::get_executuon_time() const{
-	time_t t = time(NULL);
-	struct tm date = *localtime(&t);
-	my_string data_time="<";
-	char buffer[10];
-	// Year (note: tm_year is years since 1900)
-	std::sprintf(buffer, "%d", date.tm_year + 1900);
-    data_time += (buffer);
-    data_time += ".";
-	// Month (tm_mon is 0–11, so add 1)
-	std::sprintf(buffer, "%02d", date.tm_mon + 1);
-    data_time += (buffer);
-    data_time += ".";
-	// Day
-	std::sprintf(buffer, "%02d", date.tm_mday);
-    data_time += (buffer);
-    data_time += ">";
-	// Hour
-	std::sprintf(buffer, "%02d", date.tm_hour);
-    data_time += "<";
-    data_time += (buffer);
-    data_time += ":";
-	// Minute
-	std::sprintf(buffer, "%02d", date.tm_min);
-    data_time += (buffer);
-    data_time += ":";
-	// Second
-	std::sprintf(buffer, "%02d", date.tm_sec);
-    data_time += (buffer);
-    data_time += ">";
+void System::update_current_cashier(const size_t& id) {
+	size_t index = indexOfCashier(id);
+    
+	cashiers[index].set_transactions(current_transactions);
 
-	return data_time;
 }
+
+
 
 void System::save_managers(const my_string& filename) {
     std::ofstream out(filename.c_str(), std::ios::trunc);
@@ -305,7 +301,8 @@ void System::save_cashiers(const my_string& filename){
             << cashiers[i].get_surname() << ";"
             << cashiers[i].get_age() << ";"
             << cashiers[i].get_phone_number() << ";"
-            << cashiers[i].get_password() << "\n";
+			<< cashiers[i].get_password() << ";"
+            << cashiers[i].get_transactions() << "\n";
     }
 	out.close();
 
@@ -322,8 +319,8 @@ void System::delete_manager(const size_t& id) {
 	managers = temp_managers;
 
 	save_managers("load_managers.txt");
-
-	feed_list.push_back("Manager with ID: " + my_to_string(id) + " has been deleted from the system!" + get_executuon_time());
+	Time time;
+	feed_list.push_back("Manager with ID: " + my_to_string(id) + " has been deleted from the system!" + time.get_executuon_time());
 }
 
 void System::delete_cashier(const size_t& id) {
@@ -337,8 +334,8 @@ void System::delete_cashier(const size_t& id) {
     cashiers = temp_cashiers;
 
     save_cashiers("load_cashiers.txt");
-
-    feed_list.push_back("Manager with ID: " + my_to_string(id) + " has been deleted from the system!" + get_executuon_time());
+	Time time;
+    feed_list.push_back("Manager with ID: " + my_to_string(id) + " has been deleted from the system!" + time.get_executuon_time());
 }
 
 
@@ -358,10 +355,15 @@ void  System::login(const size_t& id, const my_string& password) {
         current_age = managers[index].get_age();
         current_phone_number = managers[index].get_phone_number();
         current_password = managers[index].get_password();
-        current_special_code = managers[index].get_special_code();
-        current_role = "manager";
 
-        feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(id) + " has logged into the system!" + get_executuon_time());
+		my_string path = my_to_string(id) + "_special_code.txt";
+		my_string current_special_code;
+		std::ifstream in(path.c_str());
+        my_getline(in, current_special_code);
+
+        current_role = "manager";
+		Time time;
+        feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(id) + " has logged into the system!" + time.get_executuon_time());
     }
     else {
 
@@ -380,7 +382,8 @@ void  System::login(const size_t& id, const my_string& password) {
         current_role = "cashier";
 
     }
-        feed_list.push_back("Cashier " + current_name + " " + current_surname + " with ID: " + my_to_string(id) + " has logged into the system!" + get_executuon_time());
+        Time time;
+        feed_list.push_back("Cashier " + current_name + " " + current_surname + " with ID: " + my_to_string(id) + " has logged into the system!" + time.get_executuon_time());
 
     if (current_password == password) {
         std::cout << "User " << current_name << " " << current_surname << " with ID: " << current_id << "has been logged into the system!" << std::endl;
@@ -447,17 +450,20 @@ void System::register_employee(const my_string& role,
         out << manager.get_special_code() << "\n";
         out.close();
 
-		feed_list.push_back("Manager " + manager.get_name() + " " + manager.get_surname() + " with ID: " + my_to_string(id) + " has been registered in the system!" + get_executuon_time());
+		Time time;
+		feed_list.push_back("Manager " + manager.get_name() + " " + manager.get_surname() + " with ID: " + my_to_string(id) + " has been registered in the system!" + time.get_executuon_time());
 
 
     }
     else if (role == "cashier")
     {
 
-        Cashier cashier(id, name, surname, age, phone_number, password);
+        Cashier cashier(id, name, surname, age, phone_number, password,0);
         pending_cashiers.push_back(cashier);
         std::cout << "Cashier registration pending approval from a manager." << std::endl;
-		feed_list.push_back("Cashier " + cashier.get_name() + " " + cashier.get_surname() + " with ID: " + my_to_string(id) + " has been registered in the system and is pending approval!" + get_executuon_time());
+
+		Time time;
+		feed_list.push_back("Cashier " + cashier.get_name() + " " + cashier.get_surname() + " with ID: " + my_to_string(id) + " has been registered in the system and is pending approval!" + time.get_executuon_time());
     }
 
    
@@ -600,11 +606,13 @@ void System::list_transactions() {
 
 void System::logout() {
 	if (current_role == "manager") {
-        
-		feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has logged out of the system!" + get_executuon_time());
+		Time time;
+		feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has logged out of the system!" + time.get_executuon_time());
 	}
 	else {
-		feed_list.push_back("Cashier " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has logged out of the system!" + get_executuon_time());
+		Time time;
+		update_current_cashier(current_id);
+		feed_list.push_back("Cashier " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has logged out of the system!" + time.get_executuon_time());
 	}
 
      current_id = 0;
@@ -622,13 +630,15 @@ void System::logout() {
 
 void System::leave() {
 	if (current_role == "manager") {
+		Time time;
         delete_manager(current_id);
-		feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has left the job!" + get_executuon_time());
+		feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has left the job!" + time.get_executuon_time());
 		
     }
 	else {
+		Time time;
 		delete_cashier(current_id);
-		feed_list.push_back("Cashier " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has left the job!" + get_executuon_time());
+		feed_list.push_back("Cashier " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has left the job!" + time.get_executuon_time());
 	}
 
     logout();
@@ -673,6 +683,12 @@ void System::approve(const size_t& cashier_id, const my_string& special_code) {
 
 	cashiers.push_back(pending_cashiers[index]);
 
+    my_string path = my_to_string(cashier_id) + "_warnings.txt";
+
+    std::ofstream createWarningFile(path.c_str());
+    
+    createWarningFile.close();
+
     for (size_t i = 0; i < pending_cashiers.size(); i++)
     {
 		if (i != index)temp_pending_cashiers.push_back(pending_cashiers[i]);
@@ -682,8 +698,8 @@ void System::approve(const size_t& cashier_id, const my_string& special_code) {
 
 	pending_cashiers = temp_pending_cashiers;
 	
-
-	feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has approved cashier with ID: " + my_to_string(cashier_id) + "!" + get_executuon_time());
+	Time time;
+	feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has approved cashier with ID: " + my_to_string(cashier_id) + "!" + time.get_executuon_time());
 }
 
 void System::decline(const size_t& cashier_id, const my_string& special_code) {
@@ -706,7 +722,8 @@ void System::decline(const size_t& cashier_id, const my_string& special_code) {
 		if (i != index)temp_pending_cashiers.push_back(pending_cashiers[i]);
 	}
 	pending_cashiers = temp_pending_cashiers;
-	feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has declined cashier with ID: " + my_to_string(cashier_id) + "!" + get_executuon_time());
+	Time time;
+	feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has declined cashier with ID: " + my_to_string(cashier_id) + "!" + time.get_executuon_time());
 }
 
 void System::list_warned_cashiers(const size_t& points) {
@@ -717,7 +734,7 @@ void System::list_warned_cashiers(const size_t& points) {
 	std::cout << "Warned cashiers with more that" << points << " points:" << std::endl;
 	for (size_t i = 0; i < cashiers.size(); i++)
 	{
-		if (cashiers[i].get_warnings() >= points) {
+		if (cashiers[i].get_points_from_all_warnings() >= points) {
 			std::cout << "ID: " << cashiers[i].get_id() << ", Name: "
 				<< cashiers[i].get_name() << ", Surname: "
 				<< cashiers[i].get_surname() << ", Age: "
@@ -725,4 +742,20 @@ void System::list_warned_cashiers(const size_t& points) {
 				<< cashiers[i].get_phone_number() << std::endl;
 		}
 	}
+}
+
+void System::warn_cashier(const size_t& cashier_id, const size_t& points) {
+	if (current_role != "manager") {
+		std::cout << "You are not a manager!" << std::endl;
+		return;
+	}
+	size_t index = indexOfCashier(cashier_id);
+    std::cout << "Description of the warning: " << std::endl;
+	my_string des;
+    std::cin >> des;
+
+	Warning new_warning (current_name + " " + current_surname,des, points);
+	cashiers[index].get_warnings().push_back(new_warning);
+	Time time;
+	feed_list.push_back("Manager " + current_name + " " + current_surname + " with ID: " + my_to_string(current_id) + " has warned cashier with ID: " + my_to_string(cashier_id) + " with " + my_to_string(points) + " points!" + time.get_executuon_time());
 }

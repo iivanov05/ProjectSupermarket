@@ -81,6 +81,9 @@
     <ClCompile Include="transaction_list.txt">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Time.cpp">
+      <Filter>Source Files\Helping</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Employee.h">
@@ -112,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="System.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Time.h">
+      <Filter>Header Files\Helping</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

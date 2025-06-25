@@ -139,6 +139,7 @@
     <ClCompile Include="ProductByWeight.cpp" />
     <ClCompile Include="Supermarket.cpp" />
     <ClCompile Include="System.cpp" />
+    <ClCompile Include="Time.cpp" />
     <ClCompile Include="transaction_list.txt" />
     <ClCompile Include="Warning.cpp" />
   </ItemGroup>
@@ -152,6 +153,7 @@
     <ClInclude Include="ProductByUnit.h" />
     <ClInclude Include="ProductByWeight.h" />
     <ClInclude Include="System.h" />
+    <ClInclude Include="Time.h" />
     <ClInclude Include="Warnings.h" />
   </ItemGroup>
   <ItemGroup>
