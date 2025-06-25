@@ -9,7 +9,7 @@ System::System() {
     load_cashiers("load_cashiers.txt");
     load_products_by_unit("load_products_by_unit.txt");
     load_products_by_weight("load_products_by_weight.txt");
-    
+    load_all_gift_cards("load_GiftCards.txt");
 
 }
 
@@ -108,7 +108,6 @@ void System::load_cashiers(const my_string& filename) {
 
 }
 
-
 void System::load_products_by_unit(const my_string& filename) {
     std::ifstream in(filename.c_str());
 
@@ -157,6 +156,82 @@ void System::load_products_by_weight(const my_string& filename) {
         in.close();
     }
 }
+
+void System::load_all_gift_cards(const my_string& filename) {
+
+    std::ifstream in(filename.c_str());
+    if (!in) {
+        std::cout << "Error loading gift cards!" << std::endl;
+    }
+    if (in.peek() == EOF) {
+        in.close();
+        return;
+    }
+    my_string line;
+    while (my_getline(in, line)) {
+
+        auto parts = split(line, ':');
+        my_string special_code = parts[0];
+        if (parts.size() == 3) {
+
+            my_string category_name = parts[1];
+            size_t percentage_discount = convert_string_to_size_t(parts[2]);
+
+            single_category_gift_cards.push_back(
+                SingleCategoryGiftCard(special_code, category_name, percentage_discount));
+        }
+        else if (parts.size() == convert_string_to_size_t(parts[1]) + 3) {
+            my_vector<my_string> categories_names;
+            my_string category_name;
+            size_t percentage_discount = convert_string_to_size_t(parts[parts.size() - 1]);
+        
+            for (size_t i = 2; i < parts.size() - 1; i++) {
+				category_name = parts[i];
+                categories_names.push_back(parts[i]);
+            }
+		}
+		else if (parts.size() == 2) {
+			size_t percentage_discount = convert_string_to_size_t(parts[1]);
+			all_products_gift_cards.push_back(AllProductsGiftCard(special_code, percentage_discount));
+		}
+		else {
+			std::cout << "Error loading gift cards into the system!" << std::endl;
+			return;
+		}
+    }
+
+	in.close();
+
+}
+
+void System::delete_gift_card(const my_string& special_code) {
+	my_vector<SingleCategoryGiftCard> single_category_gift_cards_temp;
+	for (size_t i = 0; i < single_category_gift_cards.size(); i++) {
+        
+		if (single_category_gift_cards[i].get_code() != special_code) {
+			single_category_gift_cards_temp.push_back(single_category_gift_cards[i]);
+		}
+	}
+	single_category_gift_cards = single_category_gift_cards_temp;
+        
+	my_vector<AllProductsGiftCard> all_products_gift_cards_temp;
+	for (size_t i = 0; i < all_products_gift_cards.size(); i++) {
+		if (all_products_gift_cards[i].get_code() != special_code) {
+			all_products_gift_cards_temp.push_back(all_products_gift_cards[i]);
+		}
+	}
+	all_products_gift_cards = all_products_gift_cards_temp;
+	my_vector<MultipleCategoryGiftCard> multiple_category_gift_cards_temp;
+	for (size_t i = 0; i < multiple_category_gift_cards.size(); i++) {
+		if (multiple_category_gift_cards[i].get_code() != special_code) {
+			multiple_category_gift_cards_temp.push_back(multiple_category_gift_cards[i]);
+		}
+	}
+	multiple_category_gift_cards = multiple_category_gift_cards_temp;
+
+
+}
+
 
 size_t System::convert_string_to_size_t(const my_string& str) {
     my_string temp = str;
@@ -270,6 +345,7 @@ void System::update_current_cashier(const size_t& id) {
 
 
 void System::save_managers(const my_string& filename) {
+
     std::ofstream out(filename.c_str(), std::ios::trunc);
     if (!out) {
         std::cout << "Error saving manager!" << std::endl;
@@ -288,9 +364,10 @@ void System::save_managers(const my_string& filename) {
     
     out.close();
 }
+
 void System::save_cashiers(const my_string& filename){
 
-	std::ofstream out(filename.c_str(), std::ios::app);
+	std::ofstream out(filename.c_str(), std::ios::trunc);
 	if (!out) {
 		std::cout << "Error saving cashier!" << std::endl;
 		return;
@@ -305,6 +382,73 @@ void System::save_cashiers(const my_string& filename){
 			<< cashiers[i].get_password() << ";"
             << cashiers[i].get_transactions() << "\n";
     }
+	out.close();
+
+}
+
+void System::save_products_by_unit(const my_string& filename) {
+
+    std::ofstream out(filename.c_str(), std::ios::trunc);
+    if (!out) {
+        std::cout << "Error saving cashier!" << std::endl;
+        return;
+    }
+    for (size_t i = 0; i < products_by_unit.size(); i++)
+    {
+        out << products_by_unit[i].get_name() << ";"
+            << products_by_unit[i].get_category().get_name() << ";"
+			<< products_by_unit[i].get_category().get_description() << ";" 
+            << products_by_unit[i].get_price() << ";"
+            << products_by_unit[i].get_quantity()<< "\n";
+    }
+    out.close();
+
+
+} 
+
+void System::save_products_by_weight(const my_string& filename) {
+	std::ofstream out(filename.c_str(), std::ios::trunc);
+	if (!out) {
+		std::cout << "Error saving products by weight!" << std::endl;
+		return;
+	}
+	for (size_t i = 0; i < products_by_weight.size(); i++)
+	{
+		out << products_by_weight[i].get_name() << ";"
+			<< products_by_weight[i].get_category().get_name() << ";"
+			<< products_by_weight[i].get_category().get_description() << ";"
+			<< products_by_weight[i].get_price() << ";"
+			<< products_by_weight[i].get_weight() << "\n";
+	}
+	out.close();
+}
+
+void System::save_gift_cards(const my_string& filename) {
+	std::ofstream out(filename.c_str(), std::ios::trunc);
+	if (!out) {
+		std::cout << "Error saving gift cards!" << std::endl;
+		return;
+	}
+	for (size_t i = 0; i < single_category_gift_cards.size(); i++)
+	{
+		out << single_category_gift_cards[i].get_code() << ":"
+			<< single_category_gift_cards[i].get_category() << ":"
+			<< single_category_gift_cards[i].get_percentage_discount() << "\n";
+	}
+	for (size_t i = 0; i < all_products_gift_cards.size(); i++)
+	{
+		out << all_products_gift_cards[i].get_code() << ":"
+			<< all_products_gift_cards[i].get_percentage_discount() << "\n";
+	}
+	for (size_t i = 0; i < multiple_category_gift_cards.size(); i++)
+	{
+		out << multiple_category_gift_cards[i].get_code() << ":";
+		for (size_t j = 0; j < multiple_category_gift_cards[i].get_categories().size(); j++)
+		{
+			out << multiple_category_gift_cards[i].get_categories()[j] << ":";
+		}
+		out << multiple_category_gift_cards[i].get_percentage_discount() << "\n";
+	}
 	out.close();
 
 }
@@ -1022,12 +1166,21 @@ void System::delete_product(const my_string& product_name) {
 }
 
 void System::load_products(const my_string& filename) {
+
+
+	if (current_role != "manager") {
+		std::cout << "You are not a manager!" << std::endl;
+		return;
+	}
 	my_string path = filename + ".txt";
 	std::ifstream in(path.c_str());
 	if (!in) {
 		std::cout << "Error loading products!" << std::endl;
 		return;
 	}
+
+
+
 	my_string line;
 	while (my_getline(in, line)) {
 		auto parts = split(line, ':');
@@ -1114,3 +1267,35 @@ void System::load_products(const my_string& filename) {
 
 }
 
+void System::load_gift_card(const my_string& filename) {
+
+    if (current_role != "manager") {
+        std::cout << "You are not a manager!" << std::endl;
+        return;
+	}
+	my_string path = filename + ".txt";
+	std::ifstream read(path.c_str());
+	if (!read) {
+		std::cout << "Error loading  GiftCards!" << std::endl;
+		return;
+	}
+
+	std::ofstream write("load_GiftCards.txt", std::ios::app);
+    if (!read) {
+        std::cout << "Error loading GiftCards!" << std::endl;
+        return;
+    }
+
+	my_string line;
+    while (my_getline(read, line)) {
+		write << line << std::endl;
+		
+    }
+	read.close();
+	write.close();
+	std::cout << "Gift cards added successfully!" << std::endl;
+    
+
+}
+
+void

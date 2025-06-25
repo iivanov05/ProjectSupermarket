@@ -37,6 +37,12 @@
     <Filter Include="Source Files\Helping">
       <UniqueIdentifier>{1de97fd8-56b3-44b6-83e7-481e248d7552}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\CiftCars">
+      <UniqueIdentifier>{abdad27f-64ab-44c6-b6d9-7e1f16d075a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GiftCards">
+      <UniqueIdentifier>{1fde10fd-93c4-45d1-a16f-62b7ce98d8fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Supermarket.cpp">
@@ -84,6 +90,18 @@
     <ClCompile Include="Time.cpp">
       <Filter>Source Files\Helping</Filter>
     </ClCompile>
+    <ClCompile Include="GiftCard.cpp">
+      <Filter>Source Files\GiftCards</Filter>
+    </ClCompile>
+    <ClCompile Include="SingleCategoryGiftCard.cpp">
+      <Filter>Source Files\GiftCards</Filter>
+    </ClCompile>
+    <ClCompile Include="MultipleCategoryGiftCard.cpp">
+      <Filter>Source Files\GiftCards</Filter>
+    </ClCompile>
+    <ClCompile Include="AllProductsGiftCard.cpp">
+      <Filter>Source Files\GiftCards</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Employee.h">
@@ -119,6 +137,18 @@
     <ClInclude Include="Time.h">
       <Filter>Header Files\Helping</Filter>
     </ClInclude>
+    <ClInclude Include="GiftCard.h">
+      <Filter>Header Files\CiftCars</Filter>
+    </ClInclude>
+    <ClInclude Include="SingleCategoryGiftCard.h">
+      <Filter>Header Files\CiftCars</Filter>
+    </ClInclude>
+    <ClInclude Include="MultipleCategoryGiftCard.h">
+      <Filter>Header Files\CiftCars</Filter>
+    </ClInclude>
+    <ClInclude Include="AllProductsGiftCard.h">
+      <Filter>Header Files\CiftCars</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="load_products_by_unit.txt">
@@ -134,6 +164,15 @@
       <Filter>Resource Files</Filter>
     </Text>
     <Text Include="countEmployees.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="load_cards.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="countCiftCards.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="load_GiftCards.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

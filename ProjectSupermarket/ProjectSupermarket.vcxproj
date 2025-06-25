@@ -127,16 +127,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AllProductsGiftCard.cpp" />
     <ClCompile Include="Cashier.cpp" />
     <ClCompile Include="Category.cpp" />
     <ClCompile Include="Employee.cpp" />
     <ClCompile Include="feed_list.txt" />
+    <ClCompile Include="GiftCard.cpp" />
     <ClCompile Include="Manager.cpp" />
+    <ClCompile Include="MultipleCategoryGiftCard.cpp" />
     <ClCompile Include="my_string.cpp" />
     <ClCompile Include="my_vector.h" />
     <ClCompile Include="Product.cpp" />
     <ClCompile Include="ProductByUnit.cpp" />
     <ClCompile Include="ProductByWeight.cpp" />
+    <ClCompile Include="SingleCategoryGiftCard.cpp" />
     <ClCompile Include="Supermarket.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="Time.cpp" />
@@ -144,21 +148,28 @@
     <ClCompile Include="Warning.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AllProductsGiftCard.h" />
     <ClInclude Include="Cashier.h" />
     <ClInclude Include="Category.h" />
     <ClInclude Include="Employee.h" />
+    <ClInclude Include="GiftCard.h" />
     <ClInclude Include="Manager.h" />
+    <ClInclude Include="MultipleCategoryGiftCard.h" />
     <ClInclude Include="my_string.h" />
     <ClInclude Include="Product.h" />
     <ClInclude Include="ProductByUnit.h" />
     <ClInclude Include="ProductByWeight.h" />
+    <ClInclude Include="SingleCategoryGiftCard.h" />
     <ClInclude Include="System.h" />
     <ClInclude Include="Time.h" />
     <ClInclude Include="Warnings.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="countCiftCards.txt" />
     <Text Include="countEmployees.txt" />
+    <Text Include="load_cards.txt" />
     <Text Include="load_cashiers.txt" />
+    <Text Include="load_GiftCards.txt" />
     <Text Include="load_managers.txt" />
     <Text Include="load_products_by_unit.txt" />
     <Text Include="load_products_by_weight.txt" />

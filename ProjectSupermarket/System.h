@@ -7,7 +7,9 @@
 #include "my_vector.h"
 #include "my_string.h"
 #include "Time.h"
-
+#include "SingleCategoryGiftCard.h"
+#include "AllProductsGiftCard.h"
+#include "MultipleCategoryGiftCard.h"
 
 class System {
 private:
@@ -22,20 +24,24 @@ private:
 	 my_vector<Warning> current_warnings;
 	 my_string current_role;
 	 
+	
+	 my_vector<SingleCategoryGiftCard> single_category_gift_cards;
+	 my_vector<AllProductsGiftCard> all_products_gift_cards;
+	 my_vector<MultipleCategoryGiftCard> multiple_category_gift_cards;
+	 my_vector<my_string> transaction_list;
+	 my_vector<my_string> feed_list;
+	 my_vector<Cashier> pending_cashiers;
+	 my_vector<Manager> managers;
+	 my_vector<Cashier> cashiers;
+	 my_vector<ProductByUnit> products_by_unit;
+	 my_vector<ProductByWeight> products_by_weight;
+	 my_vector< Category> categories;
 
-	my_vector<my_string> transaction_list;
-	my_vector<my_string> feed_list;
-	my_vector<Cashier> pending_cashiers;
-	my_vector<Manager> managers;
-	my_vector<Cashier> cashiers;
-	my_vector<ProductByUnit> products_by_unit;
-	my_vector<ProductByWeight> products_by_weight;
-	my_vector< Category> categories;
-
-	void load_managers(const my_string& filename);
-	void load_cashiers(const my_string& filename);
-	void load_products_by_unit(const my_string& filename);
-	void load_products_by_weight(const my_string& filename);
+	 void load_managers(const my_string& filename);
+	 void load_cashiers(const my_string& filename);
+	 void load_products_by_unit(const my_string& filename);
+	 void load_products_by_weight(const my_string& filename);
+	 void load_all_gift_cards(const my_string& filename);
 public:
 
 	System();
@@ -61,6 +67,7 @@ public:
 	void logout();
 
 	//Maneger
+
 	void list_pending(const my_string& special_code);
 	void approve(const size_t& cashier_id, const my_string& special_code);
 	void decline(const size_t& cashier_id, const my_string& special_code);
@@ -78,11 +85,16 @@ public:
 
 
 	//helping functions
+	
+	void delete_gift_card(const my_string& special_code);
 	void update_current_cashier(const size_t& id);
 	void delete_manager(const size_t& id);
 	void delete_cashier(const size_t& id);
 	void save_cashiers( const my_string& filename);
 	void save_managers( const my_string& filename);
+	void save_products_by_unit(const my_string& filename);
+	void save_products_by_weight(const my_string& filename);
+	void save_gift_cards(const my_string& filename);
 	size_t indexOfManager(const size_t& id);
 	size_t indexOfCashier(const size_t& id);
 	bool isManager(const size_t&id);
