@@ -133,7 +133,6 @@
     <ClCompile Include="Employee.cpp" />
     <ClCompile Include="load_feed_list.txt" />
     <ClCompile Include="GiftCard.cpp" />
-    <ClCompile Include="load_categories.txt" />
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="MultipleCategoryGiftCard.cpp" />
     <ClCompile Include="my_string.cpp" />
@@ -171,6 +170,7 @@
     <Text Include="countEmployees.txt" />
     <Text Include="load_cards.txt" />
     <Text Include="load_cashiers.txt" />
+    <Text Include="load_categories.txt" />
     <Text Include="load_GiftCards.txt" />
     <Text Include="load_managers.txt" />
     <Text Include="load_products_by_unit.txt" />

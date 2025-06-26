@@ -105,9 +105,6 @@
     <ClCompile Include="Reciept.cpp">
       <Filter>Source Files\Helping</Filter>
     </ClCompile>
-    <ClCompile Include="load_categories.txt">
-      <Filter>text</Filter>
-    </ClCompile>
     <ClCompile Include="load_feed_list.txt">
       <Filter>text</Filter>
     </ClCompile>
@@ -185,6 +182,9 @@
       <Filter>text</Filter>
     </Text>
     <Text Include="load_products_by_weight.txt">
+      <Filter>text</Filter>
+    </Text>
+    <Text Include="load_categories.txt">
       <Filter>text</Filter>
     </Text>
   </ItemGroup>

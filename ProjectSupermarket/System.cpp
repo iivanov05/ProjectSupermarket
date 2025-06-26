@@ -104,6 +104,10 @@ void System::load_cashiers(const my_string& filename) {
 
         while (my_getline(warnings_file, line)) {
             auto parts = split(line, ';');
+            if (parts[0] == "")
+            {
+                continue;
+            }
 			my_string sender = parts[0] +" "+ parts[1];
 			my_string description = parts[2];
 			size_t critical_points = convert_string_to_size_t(parts[3]);
