@@ -15,11 +15,7 @@ public:
 
 	~SingleCategoryGiftCard() override = default;
 
-	void set_category(const my_string& new_category) {
-		category = new_category;
-	}
-	my_string get_category() const {
-		return category;
-	}
+	void set_category(const my_string& new_category);
+	my_string get_category() const;
 
 };

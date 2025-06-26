@@ -6,6 +6,10 @@
 int main()
 {
 	
+	System kaufland;
+
+	kaufland.start_System();
+
 	
 
 

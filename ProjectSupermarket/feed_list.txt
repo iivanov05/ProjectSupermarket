@@ -1,0 +1,16 @@
+System started at: <2025.06.26><04:16:15>
+Manager ivan ivanov with ID: 1 has been registered in the system!<2025.06.26><04:17:17>
+Cashier misho first with ID: 2 has been registered in the system and is pending approval!<2025.06.26><04:18:01>
+Cashier misho second with ID: 3 has been registered in the system and is pending approval!<2025.06.26><04:18:20>
+Cashier misho third with ID: 4 has been registered in the system and is pending approval!<2025.06.26><04:18:56>
+Manager ivan ivanov with ID: 1 has logged into the system!<2025.06.26><04:19:23>
+Cashier ivan ivanov with ID: 1 has logged into the system!<2025.06.26><04:19:23>
+Manager ivan ivanov with ID: 1 has approved cashier with ID: 2!<2025.06.26><04:20:37>
+Manager ivan ivanov with ID: 1 has declined cashier with ID: 3!<2025.06.26><04:27:15>
+Manager ivan ivanov with ID: 1 has warned cashier with ID: 2 with 100 points!<2025.06.26><04:29:58>
+Manager ivan ivanov with ID: 1 has added category: fruit!<2025.06.26><04:31:00>
+Manager ivan ivanov with ID: 1 has added product by unit: watermmalon!<2025.06.26><04:38:48>
+Manager ivan ivanov with ID: 1 has logged out of the system!<2025.06.26><04:44:57>
+Manager ivan ivanov with ID: 1 has logged into the system!<2025.06.26><04:45:02>
+Cashier ivan ivanov with ID: 1 has logged into the system!<2025.06.26><04:45:02>
+Manager ivan ivanov with ID: 1 has logged out of the system!<2025.06.26><04:45:43>

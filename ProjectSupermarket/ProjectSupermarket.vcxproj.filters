@@ -43,6 +43,9 @@
     <Filter Include="Source Files\GiftCards">
       <UniqueIdentifier>{1fde10fd-93c4-45d1-a16f-62b7ce98d8fb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="text">
+      <UniqueIdentifier>{703bf275-3e7d-4480-bbf6-47c64cc87678}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Supermarket.cpp">
@@ -81,12 +84,6 @@
     <ClCompile Include="my_string.cpp">
       <Filter>Source Files\Helping</Filter>
     </ClCompile>
-    <ClCompile Include="feed_list.txt">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
-    <ClCompile Include="transaction_list.txt">
-      <Filter>Resource Files</Filter>
-    </ClCompile>
     <ClCompile Include="Time.cpp">
       <Filter>Source Files\Helping</Filter>
     </ClCompile>
@@ -101,6 +98,18 @@
     </ClCompile>
     <ClCompile Include="AllProductsGiftCard.cpp">
       <Filter>Source Files\GiftCards</Filter>
+    </ClCompile>
+    <ClCompile Include="Reciept.h">
+      <Filter>Header Files\Helping</Filter>
+    </ClCompile>
+    <ClCompile Include="Reciept.cpp">
+      <Filter>Source Files\Helping</Filter>
+    </ClCompile>
+    <ClCompile Include="load_categories.txt">
+      <Filter>text</Filter>
+    </ClCompile>
+    <ClCompile Include="load_feed_list.txt">
+      <Filter>text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -151,29 +160,32 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="load_products_by_unit.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="load_products_by_weight.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="load_cashiers.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="load_managers.txt">
-      <Filter>Resource Files</Filter>
+    <Text Include="countCiftCards.txt">
+      <Filter>text</Filter>
     </Text>
     <Text Include="countEmployees.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>text</Filter>
     </Text>
     <Text Include="load_cards.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>text</Filter>
     </Text>
-    <Text Include="countCiftCards.txt">
-      <Filter>Resource Files</Filter>
+    <Text Include="load_cashiers.txt">
+      <Filter>text</Filter>
     </Text>
     <Text Include="load_GiftCards.txt">
-      <Filter>Resource Files</Filter>
+      <Filter>text</Filter>
+    </Text>
+    <Text Include="load_managers.txt">
+      <Filter>text</Filter>
+    </Text>
+    <Text Include="load_pending_cashiers.txt">
+      <Filter>text</Filter>
+    </Text>
+    <Text Include="load_products_by_unit.txt">
+      <Filter>text</Filter>
+    </Text>
+    <Text Include="load_products_by_weight.txt">
+      <Filter>text</Filter>
     </Text>
   </ItemGroup>
 </Project>

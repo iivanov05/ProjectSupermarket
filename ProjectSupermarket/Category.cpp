@@ -3,8 +3,8 @@
 Category::Category(const my_string& name1,
     const my_string& description1) {
     
-    set_name(name1);
-    set_description(description1);
+    name = (name1);
+    description = (description1);
     
 }
 Category& Category::operator=(const Category& other) {

@@ -131,8 +131,9 @@
     <ClCompile Include="Cashier.cpp" />
     <ClCompile Include="Category.cpp" />
     <ClCompile Include="Employee.cpp" />
-    <ClCompile Include="feed_list.txt" />
+    <ClCompile Include="load_feed_list.txt" />
     <ClCompile Include="GiftCard.cpp" />
+    <ClCompile Include="load_categories.txt" />
     <ClCompile Include="Manager.cpp" />
     <ClCompile Include="MultipleCategoryGiftCard.cpp" />
     <ClCompile Include="my_string.cpp" />
@@ -140,11 +141,12 @@
     <ClCompile Include="Product.cpp" />
     <ClCompile Include="ProductByUnit.cpp" />
     <ClCompile Include="ProductByWeight.cpp" />
+    <ClCompile Include="Reciept.cpp" />
+    <ClCompile Include="Reciept.h" />
     <ClCompile Include="SingleCategoryGiftCard.cpp" />
     <ClCompile Include="Supermarket.cpp" />
     <ClCompile Include="System.cpp" />
     <ClCompile Include="Time.cpp" />
-    <ClCompile Include="transaction_list.txt" />
     <ClCompile Include="Warning.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -173,6 +175,7 @@
     <Text Include="load_managers.txt" />
     <Text Include="load_products_by_unit.txt" />
     <Text Include="load_products_by_weight.txt" />
+    <Text Include="load_pending_cashiers.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
