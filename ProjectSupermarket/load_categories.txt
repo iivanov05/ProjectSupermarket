@@ -1,1 +1,3 @@
-fruit;vegetable
+fruit;
+meat;
+mlqko;mlechni_izdeliq

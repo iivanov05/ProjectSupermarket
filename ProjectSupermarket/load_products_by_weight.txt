@@ -1,0 +1,2 @@
+banana;fruit;3.9;196.8
+kaima;meat;9.5;200

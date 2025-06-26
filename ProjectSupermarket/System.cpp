@@ -106,7 +106,7 @@ void System::load_cashiers(const my_string& filename) {
             auto parts = split(line, ';');
             if (parts[0] == "")
             {
-                continue;
+                break;
             }
 			my_string sender = parts[0] +" "+ parts[1];
 			my_string description = parts[2];
@@ -146,9 +146,10 @@ void System::load_products_by_unit(const my_string& filename) {
         {
             break;
         }
-        Category categ(parts[1], parts[2]);
-        double price = convert_string_to_double(parts[3]);
-        int quantity = convert_string_to_double(parts[4]);
+        Category categ(parts[1],"");
+        double price = convert_string_to_double(parts[2]);
+        
+        int quantity = convert_string_to_size_t(parts[3]);
         products_by_unit.push_back(ProductByUnit(parts[0], categ, price, quantity));
 
         
@@ -175,9 +176,9 @@ void System::load_products_by_weight(const my_string& filename) {
         {
             break;
         }
-        Category categ(parts[1], parts[2]);
-        double price = convert_string_to_double(parts[3]);
-        int weight = convert_string_to_double(parts[4]);
+        Category categ(parts[1],"");
+        double price = convert_string_to_double(parts[2]);
+        double weight = convert_string_to_double(parts[3]);
         products_by_weight.push_back(ProductByWeight(parts[0], categ, price, weight));
 
         
@@ -371,7 +372,6 @@ void System::save_products_by_unit(const my_string& filename) {
     {
         out << products_by_unit[i].get_name() << ";"
             << products_by_unit[i].get_category().get_name() << ";"
-            << products_by_unit[i].get_category().get_description() << ";"
             << products_by_unit[i].get_price() << ";"
             << products_by_unit[i].get_quantity() << "\n";
     }
@@ -390,7 +390,6 @@ void System::save_products_by_weight(const my_string& filename) {
     {
         out << products_by_weight[i].get_name() << ";"
             << products_by_weight[i].get_category().get_name() << ";"
-            << products_by_weight[i].get_category().get_description() << ";"
             << products_by_weight[i].get_price() << ";"
             << products_by_weight[i].get_weight() << "\n";
     }
@@ -530,7 +529,7 @@ size_t System::convert_string_to_size_t(const my_string& str)const {
     size_t num = 0;
     size_t size = str.get_length();
     for (size_t i = 0, j = size; i < size; i++) {
-        num += (str[--j] - '0') * pow(10, i);
+        num += (temp[--j] - '0') * pow(10, i);
     }
     
     return num;
@@ -540,7 +539,12 @@ double System::convert_string_to_double(const my_string& str) {
     my_string temp = str;
     size_t num = 0;
     size_t counter = 0;
-    while (str[counter++] != '.');
+    while (str[counter++] != '.') {
+        if (counter == temp.get_length())
+        {
+            return convert_string_to_size_t(str);
+        }
+    }
 
 
     for (size_t i = 0, j = counter - 1; i < counter - 1; i++) {
@@ -548,6 +552,7 @@ double System::convert_string_to_double(const my_string& str) {
     }
 
     size_t size = str.get_length();
+
     double dec = 0;
     for (size_t i = counter, j = size; i < size; i++) {
         dec += (str[--j] - '0') * pow(10, i - counter);
@@ -838,11 +843,11 @@ void System::list_user_data(){
 
 void System::list_workers() {
 
-    std::cout << "Managers:" << std::endl;
+    std::cout << "\nManagers:" << std::endl;
     for (size_t i = 0; i < managers.size(); i++)
     {
        
-        std::cout   << "ID:" << managers[i].get_id()
+        std::cout   << "\nID:" << managers[i].get_id()
                     << "\nName:" << managers[i].get_name()
 		            << "\nSurname:" << managers[i].get_surname()
                     << "\nAge:" << managers[i].get_age()
@@ -850,10 +855,10 @@ void System::list_workers() {
                     << "\nRole: manager"<< std::endl;
     }
 
-    std::cout << "Cashiers:" << std::endl;
+    std::cout << "\nCashiers:" << std::endl;
     for (size_t i = 0; i < cashiers.size(); i++)
     {
-        std::cout << "ID:" << cashiers[i].get_id()
+        std::cout << "\nID:" << cashiers[i].get_id()
             << "\nName:" << cashiers[i].get_name()
             << "\nSurname:" << cashiers[i].get_surname()
             << "\nAge:" << cashiers[i].get_age()
@@ -1212,7 +1217,7 @@ void System::fire_cashier(const size_t& cashier_id, const my_string& special_cod
     }
 
     Time time;
-    delete_cashier(current_id);
+    delete_cashier(cashier_id);
     feed_list.push_back("Manager " + current_name + " " + current_surname + " fired Cashier with ID: " + my_to_string(cashier_id) + "!" + time.get_executuon_time());
 	std::cout << "\nCashier with ID: " << cashier_id << " has been fired!" << std::endl;
 
@@ -1293,11 +1298,12 @@ void System::add_product(const my_string& product_type) {
     
 	bool category_exists = false;
     Category current_category;
+    current_category.set_name(category_name);
     for (size_t i = 0; i < categories.size(); i++)
     {
 		if (categories[i].get_name() == category_name) {
 			category_exists = true;
-			current_category = categories[i];
+            current_category.set_description(categories[i].get_description());
 		
 		}
     }
@@ -1586,7 +1592,7 @@ void System::start_System() {
     else if (command == "sell") {
 		size_t transaction_id = get_transaction_id();
         my_string path = "receipt_" + my_to_string(get_transaction_id()) + ".txt";
-		std::ofstream reciept(path.c_str(), std::ios::app);
+		std::ofstream reciept(path.c_str(), std::ios::trunc);
 		if (!reciept) {
 			std::cout << "Error opening receipt file!" << std::endl;
 			return;
@@ -1624,11 +1630,13 @@ void System::start_System() {
 
         std::cout << "Enter product Name to sell.Enter END to end the transaction:" << std::endl;
 		std::cin >> command;
+		my_string name_of_wanted_product = command;
 		if (command == "END") {
             
             for (size_t i = 0; i < basket.size(); i++)
             {
-                double price = round_to_decimal(basket[i].get_item_quantity() * basket[i].get_item_price(), 2);
+                double price = basket[i].get_item_quantity() * basket[i].get_item_price();
+
                 reciept << "\n" << basket[i].get_item_name() << "\n"
                     << "\n" << basket[i].get_item_quantity() << " * "
                     << basket[i].get_item_price() << " - "
@@ -1658,6 +1666,8 @@ void System::start_System() {
                 std::cout << voucher_percent_discoutn << "% applied! Transaction complete!" << std::endl;
                 current_transactions++;
 
+                save_products_by_unit("load_products_by_unit.txt");
+                save_products_by_weight("load_products_by_weight.txt");
 
                 reciept << "\n"<<voucher_percent_discoutn << "% applied!"
 					<< "\nTotal price: " << total<< " lv." << std::endl;
@@ -1673,7 +1683,8 @@ void System::start_System() {
 			else if (command == "N") {
 				std::cout << "Transaction complete!" << std::endl;
                 current_transactions++;
-
+				save_products_by_unit("load_products_by_unit.txt");
+				save_products_by_weight("load_products_by_weight.txt");
                 reciept << "\nTotal price: " << total << " lv." << std::endl;
 
                 reciept.close();
@@ -1692,54 +1703,63 @@ void System::start_System() {
 		}
 
 
-		
-
 		for (size_t i = 0; i < products_by_unit.size(); i++)
         {
-            if (products_by_unit[i].get_name() == command)
+            if (products_by_unit[i].get_name() == name_of_wanted_product)
             {
-				item_found = true;
+                my_string quantity;
 				std::cout << "Enter quantity: ";
-                std::cin >> command;
-				products_by_unit[i].set_quantity(products_by_unit[i].get_quantity() - convert_string_to_size_t(command));
-
-                if (!item_found)
+                std::cin >> quantity;
+				products_by_unit[i].set_quantity(products_by_unit[i].get_quantity() - convert_string_to_size_t(quantity));
+				
+                bool item_is_already_in_basket = false;
+                for (size_t j = 0; j < basket.size(); j++)
                 {
-                    std::cout << "Product not found! Please try again." << std::endl;
+                    if (basket[j].get_item_name() == products_by_unit[i].get_name())
+                    {
+                        item_is_already_in_basket = true;
+                        basket[j].set_item_quantity(basket[j].get_item_quantity() + convert_string_to_size_t(quantity));
+                        goto sell;
+                    }
+                }
+                if (!item_is_already_in_basket) {
+                    basket.push_back(Receipt(products_by_unit[i].get_name(),
+                        convert_string_to_size_t(quantity),
+                        products_by_unit[i].get_price()));
                     goto sell;
                 }
-                else
-                {
-                    bool item_is_already_in_basket = false;
-                    for (size_t j = 0; j < basket.size(); j++)
-                    {
-                        if (basket[j].get_item_name() == products_by_unit[i].get_name())
-                        {
-                            item_is_already_in_basket = true;
-                            basket[j].set_item_quantity(basket[j].get_item_quantity() + convert_string_to_size_t(command));
-                            goto sell;
-                        }
-                    }
-                    if (!item_is_already_in_basket) {
-                        basket.push_back(Receipt(products_by_unit[i].get_name(),
-                            products_by_unit[i].get_price(),
-                            convert_string_to_size_t(command)));
-						goto sell;
-                    }
-                }
+
 
 				
             }
         }
+		
 
         for (size_t i = 0; i < products_by_weight.size(); i++)
         {
-            if (products_by_weight[i].get_name() == command)
+            if (products_by_weight[i].get_name() == name_of_wanted_product)
             {
+
+                my_string quantity;
                 item_found = true;
                 std::cout << "Enter quantity: ";
-                std::cin >> command;
-                products_by_weight[i].set_weight(products_by_weight[i].get_weight() - convert_string_to_size_t(command));
+                std::cin >> quantity;
+                products_by_weight[i].set_weight(products_by_weight[i].get_weight() - convert_string_to_double(quantity));
+                bool item_is_already_in_basket = false;
+
+                for (size_t j = 0; j < basket.size(); j++)
+                {
+
+                    if (basket[j].get_item_name() == products_by_weight[i].get_name())
+                    {
+                        item_is_already_in_basket = true;
+                        basket[j].set_item_quantity(basket[j].get_item_quantity() + convert_string_to_size_t(quantity));
+                        goto sell;
+                    }
+                    
+
+                }
+
 
                 if (!item_found)
                 {
@@ -1748,31 +1768,19 @@ void System::start_System() {
                 }
                 else {
 
-                    bool item_is_already_in_basket = false;
-
-                    for (size_t j = 0; j < basket.size(); j++)
-                    {
-
-                        if (basket[j].get_item_name() == products_by_weight[i].get_name())
-                        {
-                            item_is_already_in_basket = true;
-                            basket[j].set_item_quantity(basket[j].get_item_quantity() + convert_string_to_size_t(command));
-                            goto sell;
-                        }
                     
-
-                    }
 
                     if (!item_is_already_in_basket) {
                         basket.push_back(Receipt(products_by_weight[i].get_name(),
-                            products_by_weight[i].get_price(),
-                            convert_string_to_size_t(command)));
+                            convert_string_to_size_t(command),
+                            products_by_weight[i].get_price()));
                             goto sell;
                     }
 
                 }
 
-                
+				std::cout << "\nProduct not found! Please try again." << std::endl;
+				goto sell;
                 
 
                 

@@ -3,8 +3,7 @@
 
 
 my_string Time::get_executuon_time()  {
-	/*time_t t = time(NULL);
-	struct tm date = *localtime(&t);*/
+
 
 	my_string data_time = "<";
 	char buffer[10];

@@ -5,8 +5,7 @@ class Category {
 private:
     my_string name;
     my_string description;
-    void set_name(const my_string& new_name);
-    void set_description(const my_string& new_description);
+
 
 public:
 
@@ -19,7 +18,8 @@ public:
 
     ~Category() = default;
 
-
+    void set_name(const my_string& new_name);
+    void set_description(const my_string& new_description);
     my_string get_name();
     my_string get_description();
 

@@ -1,0 +1,16 @@
+RECEIPT
+
+Transaction ID: 1
+
+Cashier ID: 4
+
+Products sold:
+
+Date: <2025.06.26><07:59:47>
+
+------------------------------ 0
+
+banana
+
+3.9 * 9.22337e+18 - -2.14748e+07
+###
