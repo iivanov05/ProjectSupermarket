@@ -1,0 +1,29 @@
+RECEIPT
+
+Transaction ID: 3
+
+Cashier ID: 4
+
+Products sold:
+
+Date: <2025.06.26><11:24:14>
+
+------------------------------ 
+
+kiselo mlqko
+
+5 * 1.8 - 9
+###
+
+kaima
+
+3.5 * 9.5 - 33.25
+###
+
+banana
+
+2.7 * 3.9 - 10.53
+###
+
+0% applied!
+Total price: 52.78 lv.

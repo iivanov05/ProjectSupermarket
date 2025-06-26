@@ -477,6 +477,26 @@ void System::save_categories(const my_string& filename) {
 }
 
 //HELPER FUNCTIONS
+size_t System::index_of_product_by_unit(const my_string& name_of_product) {
+
+
+    for (size_t i = 0; i < products_by_unit.size(); i++)
+    {
+        if (products_by_unit[i].get_name() == name_of_product)return i;
+    }
+
+    return 0;
+
+}
+
+size_t System::index_of_product_by_weight(const my_string& name_of_product) {
+    for (size_t i = 0; i < products_by_weight.size(); i++)
+    {
+        if (products_by_weight[i].get_name() == name_of_product)return i;
+    }
+
+    return 0;
+}
 size_t System::delete_gift_card(const my_string& special_code)  {
 	my_vector<SingleCategoryGiftCard> single_category_gift_cards_temp;
 
@@ -522,6 +542,28 @@ size_t System::delete_gift_card(const my_string& special_code)  {
 		return 0;
 	}
 	return discout_percentage;
+}
+
+bool System::is_product_by_unit(const my_string& name_of_product) {
+
+    for (size_t i = 0; i < products_by_unit.size(); i++)
+    {
+        if (products_by_unit[i].get_name() == name_of_product)return true;
+    }
+
+    return false;
+
+}
+
+bool System::is_product_by_weight(const my_string& name_of_product) {
+
+    for (size_t i = 0; i < products_by_weight.size(); i++)
+    {
+        if (products_by_weight[i].get_name() == name_of_product)return true;
+    }
+
+    return false;
+
 }
 
 size_t System::convert_string_to_size_t(const my_string& str)const {
@@ -1552,11 +1594,11 @@ void System::start_System() {
     std::cout << "Please choose an action:" << std::endl;
 
     Time time;
-	feed_list.push_back("System started at: " + time.get_executuon_time());
+    feed_list.push_back("System started at: " + time.get_executuon_time());
 
 
-        input:
-	double total=0;
+input:
+    double total = 0;
     my_string input;
     std::cin >> input;
     auto parts = split(input, ' ');
@@ -1585,207 +1627,200 @@ void System::start_System() {
     }
     else if (current_id == 0) {
 
-		std::cout << "You must be logged in to perform this action!" << std::endl;
-		goto input;
+        std::cout << "You must be logged in to perform this action!" << std::endl;
+        goto input;
 
     }
     else if (command == "sell") {
-		size_t transaction_id = get_transaction_id();
+
+
+        size_t transaction_id = get_transaction_id();
         my_string path = "receipt_" + my_to_string(get_transaction_id()) + ".txt";
-		std::ofstream reciept(path.c_str(), std::ios::trunc);
-		if (!reciept) {
-			std::cout << "Error opening receipt file!" << std::endl;
-			return;
-		}
-		reciept << "RECEIPT" << std::endl;
-		reciept << "\nTransaction ID: " << transaction_id << std::endl;
-		reciept << "\nCashier ID: " << current_id << std::endl;
-		reciept << "\nProducts sold:" << std::endl;
-		Time time;
-		reciept << "\nDate: " << time.get_executuon_time() << std::endl;
-		reciept << "\n------------------------------ " << total << std::endl;
+        std::ofstream reciept(path.c_str(), std::ios::trunc);
+        if (!reciept) {
+            std::cout << "Error opening receipt file!" << std::endl;
+            return;
+        }
+        reciept << "RECEIPT" << std::endl;
+        reciept << "\nTransaction ID: " << transaction_id << std::endl;
+        reciept << "\nCashier ID: " << current_id << std::endl;
+        reciept << "\nProducts sold:" << std::endl;
+        Time time;
+        reciept << "\nDate: " << time.get_executuon_time() << std::endl;
+        reciept << "\n------------------------------ " << std::endl;
 
         my_vector<Receipt> basket;
 
     sell:
 
 
-		bool item_found = false;
+        bool item_found = false;
         std::cout << "Products: " << std::endl;
+
         for (size_t i = 0; i < products_by_unit.size(); i++)
         {
-			std::cout << "\t" << products_by_unit[i].get_name() << " : "
-				<< products_by_unit[i].get_price() << " : "
-				<< products_by_unit[i].get_quantity() << std::endl;
+            std::cout << "\t" << products_by_unit[i].get_name() << " : "
+                << products_by_unit[i].get_price() << " : "
+                << products_by_unit[i].get_quantity() << std::endl;
         }
         for (size_t i = 0; i < products_by_weight.size(); i++)
-        { 
-			std::cout << "\t" << products_by_weight[i].get_name() << " : "
-				<< products_by_weight[i].get_price() << "/kg : "
-				<< products_by_weight[i].get_weight() << std::endl;
+        {
+            std::cout << "\t" << products_by_weight[i].get_name() << " : "
+                << products_by_weight[i].get_price() << "/kg : "
+                << products_by_weight[i].get_weight() << std::endl;
         }
 
-		std::cout << "\nTransaction ID: " << transaction_id << std::endl;
-		std::cout << "Price: " << total << std::endl;
+        std::cout << "\nTransaction ID: " << transaction_id << std::endl;
+        std::cout << "Price: " << total << std::endl;
 
         std::cout << "Enter product Name to sell.Enter END to end the transaction:" << std::endl;
-		std::cin >> command;
-		my_string name_of_wanted_product = command;
-		if (command == "END") {
-            
-            for (size_t i = 0; i < basket.size(); i++)
+        std::cin >> command;
+        my_string name_of_wanted_product = command;
+
+
+        
+
+
+        
+            if (is_product_by_unit(name_of_wanted_product))
             {
-                double price = basket[i].get_item_quantity() * basket[i].get_item_price();
-
-                reciept << "\n" << basket[i].get_item_name() << "\n"
-                    << "\n" << basket[i].get_item_quantity() << " * "
-                    << basket[i].get_item_price() << " - "
-                    << price
-                    << "\n" <<"###" << std::endl;
-				total += price;
-            }
-			
-			std::cout << "Add voucher: (Y/N)?" << std::endl;
-            std::cin >> command;
-
-
-            if (command == "Y") {
-                std::cout << "Enter voucher: " << std::endl;
-                std::cin >> command;
-				size_t voucher_percent_discoutn = 0;
-                if (delete_gift_card(command) == 0) {
-					std::cout << "Invalid voucher!" << std::endl;
-                }
-                else {
-                        
-					voucher_percent_discoutn = delete_gift_card(command);
-                }
-
-				total = total - total * (voucher_percent_discoutn / 100.0);
-				total = round_to_decimal(total, 2);
-                std::cout << voucher_percent_discoutn << "% applied! Transaction complete!" << std::endl;
-                current_transactions++;
-
-                save_products_by_unit("load_products_by_unit.txt");
-                save_products_by_weight("load_products_by_weight.txt");
-
-                reciept << "\n"<<voucher_percent_discoutn << "% applied!"
-					<< "\nTotal price: " << total<< " lv." << std::endl;
-
-				reciept.close();
-
-				std::cout << "Receipt saved as: " << path << std::endl;
-                std::cout << "Total price: " << total <<" lv." << std::endl;
-
-                goto input;
-
-            }
-			else if (command == "N") {
-				std::cout << "Transaction complete!" << std::endl;
-                current_transactions++;
-				save_products_by_unit("load_products_by_unit.txt");
-				save_products_by_weight("load_products_by_weight.txt");
-                reciept << "\nTotal price: " << total << " lv." << std::endl;
-
-                reciept.close();
-
-                std::cout << "Receipt saved as: " << path << std::endl;
-                std::cout << "Total price: " << total << " lv." << std::endl;
-
-				goto input;
-			}
-			else {
-				std::cout << "Invalid command!" << std::endl;
-				goto sell;
-			}
-
-			
-		}
-
-
-		for (size_t i = 0; i < products_by_unit.size(); i++)
-        {
-            if (products_by_unit[i].get_name() == name_of_wanted_product)
-            {
+                double price_of_product = products_by_unit[index_of_product_by_unit(name_of_wanted_product)].get_price();
                 my_string quantity;
-				std::cout << "Enter quantity: ";
+                std::cout << "Enter quantity: ";
                 std::cin >> quantity;
-				products_by_unit[i].set_quantity(products_by_unit[i].get_quantity() - convert_string_to_size_t(quantity));
-				
+                products_by_unit[index_of_product_by_unit(name_of_wanted_product)]
+                    .set_quantity(products_by_unit[index_of_product_by_unit(name_of_wanted_product)].get_quantity() - convert_string_to_size_t(quantity));
+
                 bool item_is_already_in_basket = false;
                 for (size_t j = 0; j < basket.size(); j++)
                 {
-                    if (basket[j].get_item_name() == products_by_unit[i].get_name())
+                    if (basket[j].get_item_name() == name_of_wanted_product)
                     {
                         item_is_already_in_basket = true;
                         basket[j].set_item_quantity(basket[j].get_item_quantity() + convert_string_to_size_t(quantity));
+                        total += convert_string_to_size_t(quantity) * price_of_product;
                         goto sell;
                     }
                 }
                 if (!item_is_already_in_basket) {
-                    basket.push_back(Receipt(products_by_unit[i].get_name(),
+                    basket.push_back(Receipt(name_of_wanted_product,
                         convert_string_to_size_t(quantity),
-                        products_by_unit[i].get_price()));
+                        price_of_product));
+                    total += convert_string_to_size_t(quantity) * price_of_product;
                     goto sell;
                 }
 
 
-				
+
             }
-        }
-		
+            else if (is_product_by_weight(name_of_wanted_product)) {
 
-        for (size_t i = 0; i < products_by_weight.size(); i++)
-        {
-            if (products_by_weight[i].get_name() == name_of_wanted_product)
-            {
-
+                double price_of_product = products_by_weight[index_of_product_by_weight(name_of_wanted_product)].get_price();
                 my_string quantity;
-                item_found = true;
                 std::cout << "Enter quantity: ";
                 std::cin >> quantity;
-                products_by_weight[i].set_weight(products_by_weight[i].get_weight() - convert_string_to_double(quantity));
-                bool item_is_already_in_basket = false;
+                products_by_weight[index_of_product_by_weight(name_of_wanted_product)]
+                    .set_weight(products_by_weight[index_of_product_by_weight(name_of_wanted_product)].get_weight() - convert_string_to_double(quantity));
 
-                for (size_t j = 0; j < basket.size(); j++)
-                {
-
-                    if (basket[j].get_item_name() == products_by_weight[i].get_name())
+                    bool item_is_already_in_basket = false;
+                    for (size_t j = 0; j < basket.size(); j++)
                     {
-                        item_is_already_in_basket = true;
-                        basket[j].set_item_quantity(basket[j].get_item_quantity() + convert_string_to_size_t(quantity));
+                        if (basket[j].get_item_name() == name_of_wanted_product)
+                        {
+                            item_is_already_in_basket = true;
+                            basket[j].set_item_quantity(basket[j].get_item_quantity() + convert_string_to_double(quantity));
+                            total += convert_string_to_double(quantity) * price_of_product;
+                            goto sell;
+                        }
+                    }
+                    if (!item_is_already_in_basket) {
+                        basket.push_back(Receipt(name_of_wanted_product,
+                            convert_string_to_double(quantity),
+                            price_of_product));
+                        total += convert_string_to_double(quantity) * price_of_product;
                         goto sell;
                     }
-                    
-
-                }
 
 
-                if (!item_found)
+
+            }
+            else if (command == "END") {
+
+                for (size_t i = 0; i < basket.size(); i++)
                 {
-                    std::cout << "Product not found! Please try again." << std::endl;
-                    goto sell;
-                }
-                else {
-
                     
+                    double price = basket[i].get_item_quantity() * basket[i].get_item_price();
 
-                    if (!item_is_already_in_basket) {
-                        basket.push_back(Receipt(products_by_weight[i].get_name(),
-                            convert_string_to_size_t(command),
-                            products_by_weight[i].get_price()));
-                            goto sell;
+                    reciept << "\n" << basket[i].get_item_name() << "\n"
+                        << "\n" << basket[i].get_item_quantity() << " * "
+                        << basket[i].get_item_price() << " - "
+                        << price
+                        << "\n" << "###" << std::endl;
+                   
+                }
+
+                std::cout << "Add voucher: (Y/N)?" << std::endl;
+                std::cin >> command;
+
+
+                if (command == "Y") {
+                    std::cout << "Enter voucher: " << std::endl;
+                    std::cin >> command;
+                    size_t voucher_percent_discoutn = 0;
+                    if (delete_gift_card(command) == 0) {
+                        std::cout << "Invalid voucher!" << std::endl;
+                    }
+                    else {
+
+                        voucher_percent_discoutn = delete_gift_card(command);
                     }
 
+                    total = total - total * (voucher_percent_discoutn / 100.0);
+                    total = round_to_decimal(total, 2);
+                    std::cout << voucher_percent_discoutn << "% applied! Transaction complete!" << std::endl;
+                    current_transactions++;
+
+                    save_products_by_unit("load_products_by_unit.txt");
+                    save_products_by_weight("load_products_by_weight.txt");
+                    update_current_cashier(current_id);
+                    save_cashiers("load_cashiers.txt");
+
+                    reciept << "\n" << voucher_percent_discoutn << "% applied!"
+                        << "\nTotal price: " << total << " lv." << std::endl;
+
+                    reciept.close();
+
+                    std::cout << "Receipt saved as: " << path << std::endl;
+                    std::cout << "Total price: " << total << " lv." << std::endl;
+
+                    goto input;
+
+                }
+                else if (command == "N") {
+                    std::cout << "Transaction complete!" << std::endl;
+                    current_transactions++;
+                    save_products_by_unit("load_products_by_unit.txt");
+                    save_products_by_weight("load_products_by_weight.txt");
+                    update_current_cashier(current_id);
+                    save_cashiers("load_cashiers.txt");
+
+                    reciept << "\nTotal price: " << total << " lv." << std::endl;
+
+                    reciept.close();
+
+                    std::cout << "Receipt saved as: " << path << std::endl;
+                    std::cout << "Total price: " << total << " lv." << std::endl;
+
+                    goto input;
                 }
 
-				std::cout << "\nProduct not found! Please try again." << std::endl;
-				goto sell;
-                
 
                 
-            }
-        }
+
+            }else {
+                    std::cout << "Invalid command!" << std::endl;
+                    goto sell;
+                }
 
 
     }
@@ -1822,7 +1857,45 @@ void System::start_System() {
             std::cout << "Invalid number of arguments for list_products command!" << std::endl;
             goto input;
         }
-        
+
+
+
+
+    }
+    else if (command == "list-user-data") {
+        if (parts.size() != 1) {
+            std::cout << "Invalid number of arguments for list_user_data command!" << std::endl;
+            goto input;
+        }
+        list_user_data();
+        goto input;
+
+    }
+    else if (command == "list-workers") {
+        if (parts.size() != 1) {
+            std::cout << "Invalid number of arguments for list_workers command!" << std::endl;
+            goto input;
+        }
+        list_workers();
+        goto input;
+    }
+    else if (command == "list-products") {
+
+        if (parts.size() == 1) {
+
+            list_products();
+            goto input;
+
+        }
+        else if (parts.size() == 2) {
+            list_products(parts[1]);
+            goto input;
+        }
+        else {
+            std::cout << "Invalid number of arguments for list_products command!" << std::endl;
+            goto input;
+        }
+
 
     }
     else if (command == "list-feed") {
@@ -1857,11 +1930,11 @@ void System::start_System() {
         leave();
         goto input;
     }
-    else if(current_role != "manager")
+    else if (current_role != "manager")
     {
-		std::cout << "You must be a manager to perform this action!" << std::endl;
-		goto input;
-	}
+        std::cout << "You must be a manager to perform this action!" << std::endl;
+        goto input;
+    }
     else if (command == "list-pending") {
 
         if (parts.size() != 1) {
@@ -1869,11 +1942,11 @@ void System::start_System() {
             goto input;
         }
 
-		list_pending();
+        list_pending();
         goto input;
 
 
-	}
+    }
     else if (command == "approve") {
         if (parts.size() != 3) {
             std::cout << "Invalid number of arguments for approve command!" << std::endl;
@@ -1882,103 +1955,104 @@ void System::start_System() {
         approve(convert_string_to_size_t(parts[1]), parts[2]);
         goto input;
 
-		}
-	else if (command == "decline") {
-		if (parts.size() != 3) {
-			std::cout << "Invalid number of arguments for decline command!" << std::endl;
-			goto input;
-		}
-		decline(convert_string_to_size_t(parts[1]), parts[2]);
-		goto input;
-		}
-	else if (command == "list-warned-cashiers") {
-		if (parts.size() != 2) {
-			std::cout << "Invalid number of arguments for list_warned_cashiers command!" << std::endl;
-			goto input;
-		}
-		list_warned_cashiers(convert_string_to_size_t(parts[1]));
-		goto input;
-		}
-	else if (command == "warn-cashier") {
-		if (parts.size() != 3) {
-			std::cout << "Invalid number of arguments for warn_cashier command!" << std::endl;
-			goto input;
-		}
-		warn_cashier(convert_string_to_size_t(parts[1]), convert_string_to_size_t(parts[2]));
-		goto input;
-		}
-	else if (command == "promote-cashier") {
-		if (parts.size() != 3) {
-			std::cout << "Invalid number of arguments for promote_cashier command!" << std::endl;
-			goto input;
-		}
-		promote_cashier(convert_string_to_size_t(parts[1]), parts[2]);
-		goto input;
-		}
-	else if (command == "fire-cashier") {
-		if (parts.size() != 3) {
-			std::cout << "Invalid number of arguments for fire_cashier command!" << std::endl;
-			goto input;
-		}
-		fire_cashier(convert_string_to_size_t(parts[1]), parts[2]);
-		goto input;
-		}
-	else if (command == "add-category") {
-		if (parts.size() != 3) {
-			std::cout << "Invalid number of arguments for add_category command!" << std::endl;
-			goto input;
-		}
-		add_category(parts[1], parts[2]);
-		goto input;
-		}
-	else if (command == "delete-category") {
-		if (parts.size() != 2) {
-			std::cout << "Invalid number of arguments for delete_category command!" << std::endl;
-			goto input;
-		}
-		delete_category(parts[1]);
-		goto input;
-		}
-	else if (command == "add-product") {
-	    if (parts.size() != 2) {
-		    std::cout << "Invalid number of arguments for add_product command!" << std::endl;
-		    goto input;
-	    }
-	    add_product(parts[1]);
-	    goto input;
-	    }
-	else if (command == "delete-product") {
-		if (parts.size() != 2) {
-			std::cout << "Invalid number of arguments for delete_product command!" << std::endl;
-			goto input;
-		}
-		delete_product(parts[1]);
-		goto input;
-		}
-	else if (command == "load-products") {
-		if (parts.size() != 2) {
-			std::cout << "Invalid number of arguments for load_products command!" << std::endl;
-			goto input;
-		}
-		load_products(parts[1]);
-		goto input;
-		}
-	else if (command == "load-gift-card") {
-	    if (parts.size() != 2) {
-		    std::cout << "Invalid number of arguments for load_gift_card command!" << std::endl;
-		    goto input;
-	    }
-	    load_gift_card(parts[1]);
-	    goto input;
-	    }
-	else if (command == "exit") {
-		return;
-		}
-	else {
-	    std::cout << "Unknown command!" << std::endl;
-	    goto input;
-	    }
+    }
+    else if (command == "decline") {
+        if (parts.size() != 3) {
+            std::cout << "Invalid number of arguments for decline command!" << std::endl;
+            goto input;
+        }
+        decline(convert_string_to_size_t(parts[1]), parts[2]);
+        goto input;
+    }
+    else if (command == "list-warned-cashiers") {
+        if (parts.size() != 2) {
+            std::cout << "Invalid number of arguments for list_warned_cashiers command!" << std::endl;
+            goto input;
+        }
+        list_warned_cashiers(convert_string_to_size_t(parts[1]));
+        goto input;
+    }
+    else if (command == "warn-cashier") {
+        if (parts.size() != 3) {
+            std::cout << "Invalid number of arguments for warn_cashier command!" << std::endl;
+            goto input;
+        }
+        warn_cashier(convert_string_to_size_t(parts[1]), convert_string_to_size_t(parts[2]));
+        goto input;
+    }
+    else if (command == "promote-cashier") {
+        if (parts.size() != 3) {
+            std::cout << "Invalid number of arguments for promote_cashier command!" << std::endl;
+            goto input;
+        }
+        promote_cashier(convert_string_to_size_t(parts[1]), parts[2]);
+        goto input;
+    }
+    else if (command == "fire-cashier") {
+        if (parts.size() != 3) {
+            std::cout << "Invalid number of arguments for fire_cashier command!" << std::endl;
+            goto input;
+        }
+        fire_cashier(convert_string_to_size_t(parts[1]), parts[2]);
+        goto input;
+    }
+    else if (command == "add-category") {
+        if (parts.size() != 3) {
+            std::cout << "Invalid number of arguments for add_category command!" << std::endl;
+            goto input;
+        }
+        add_category(parts[1], parts[2]);
+        goto input;
+    }
+    else if (command == "delete-category") {
+        if (parts.size() != 2) {
+            std::cout << "Invalid number of arguments for delete_category command!" << std::endl;
+            goto input;
+        }
+        delete_category(parts[1]);
+        goto input;
+    }
+    else if (command == "add-product") {
+        if (parts.size() != 2) {
+            std::cout << "Invalid number of arguments for add_product command!" << std::endl;
+            goto input;
+        }
+        add_product(parts[1]);
+        goto input;
+    }
+    else if (command == "delete-product") {
+        if (parts.size() != 2) {
+            std::cout << "Invalid number of arguments for delete_product command!" << std::endl;
+            goto input;
+        }
+        delete_product(parts[1]);
+        goto input;
+    }
+    else if (command == "load-products") {
+        if (parts.size() != 2) {
+            std::cout << "Invalid number of arguments for load_products command!" << std::endl;
+            goto input;
+        }
+        load_products(parts[1]);
+        goto input;
+    }
+    else if (command == "load-gift-card") {
+        if (parts.size() != 2) {
+            std::cout << "Invalid number of arguments for load_gift_card command!" << std::endl;
+            goto input;
+        }
+        load_gift_card(parts[1]);
+        goto input;
+    }
+    else if (command == "exit") {
+        return;
+    }
+    else {
+        std::cout << "Unknown command!" << std::endl;
+        goto input;
+    }
 
+    
 }
 
 

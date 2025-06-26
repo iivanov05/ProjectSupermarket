@@ -83,6 +83,10 @@ private:
 
 
 	 //helping functions
+	 size_t index_of_product_by_unit(const my_string& name_of_product);
+	 size_t index_of_product_by_weight(const my_string& name_of_product);
+	 bool is_product_by_weight(const my_string& name_of_product);
+	 bool is_product_by_unit(const my_string& name_of_product);
 	 void save_cashiers(const my_string& filename);
 	 void save_managers(const my_string& filename);
 	 void save_products_by_unit(const my_string& filename);

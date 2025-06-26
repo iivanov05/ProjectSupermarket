@@ -1,6 +1,3 @@
-System started at: <2025.06.26><07:24:18>
-Cashier bob buton with ID: 4 has been registered in the system and is pending approval!<2025.06.26><07:25:00>
-Manager admin admim with ID: 1 has logged into the system!<2025.06.26><07:25:05>
-Cashier admin admim with ID: 1 has logged into the system!<2025.06.26><07:25:05>
-Manager admin admim with ID: 1 has approved cashier with ID: 4!<2025.06.26><07:25:39>
-Manager admin admim with ID: 1 has logged out of the system!<2025.06.26><07:26:38>
+System started at: <2025.06.26><11:18:39>
+Cashier bob buton with ID: 4 has logged into the system!<2025.06.26><11:18:47>
+Cashier bob buton with ID: 4 has logged out of the system!<2025.06.26><11:20:10>

@@ -1,12 +1,12 @@
 RECEIPT
 
-Transaction ID: 1
+Transaction ID: 2
 
 Cashier ID: 4
 
 Products sold:
 
-Date: <2025.06.26><11:15:38>
+Date: <2025.06.26><11:18:52>
 
 ------------------------------ 0
 
@@ -17,12 +17,12 @@ kiselo mlqko
 
 banana
 
-2.8 * 3.9 - 10.92
+3.7 * 3.9 - 14.43
 ###
 
 kaima
 
-1 * 9.5 - 9.5
+0.5 * 9.5 - 4.75
 ###
 
-Total price: 9.5 lv.
+Total price: 26.38 lv.
